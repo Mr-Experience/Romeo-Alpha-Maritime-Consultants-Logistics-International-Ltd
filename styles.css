@@ -5,6 +5,10 @@
     padding: 0;
 }
 
+html {
+    scroll-behavior: smooth;
+}
+
 body {
     font-family: 'Manrope', sans-serif;
     background-color: #FFFFFF;
@@ -1258,6 +1262,7 @@ body {
 
     .benefit-header {
         max-width: 100%;
+        text-align: center;
     }
 
     .benefit-grid {
@@ -1745,5 +1750,40 @@ body {
     .proof-section {
         padding: 64px 24px;
         height: auto;
+    }
+
+    .proof-item {
+        align-items: center;
+        text-align: center;
+        width: 100%;
+    }
+}
+
+/* Mobile Navigation & Spacing Adjustments */
+@media (max-width: 1024px) {
+
+    /* Fix Mobile Menu to Viewport so it follows scroll */
+    .mobile-menu-dropdown {
+        position: fixed;
+        /* Matches header z-index logic (Header is 900) */
+        z-index: 899;
+        max-height: calc(100vh - 80px);
+        overflow-y: auto;
+    }
+
+    /* Force mobile header layout for precise spacing */
+    .main-header {
+        justify-content: flex-start;
+    }
+
+    /* Push the center/right items to the far right */
+    .header-left {
+        margin-right: auto;
+    }
+
+    /* Ensure specific gap between language selector and hamburger */
+    .header-right {
+        margin-right: 16px;
+        gap: 0;
     }
 }

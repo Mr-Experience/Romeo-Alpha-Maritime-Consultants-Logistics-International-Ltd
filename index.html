@@ -377,7 +377,7 @@
             </section>
 
             <!-- Banner Section -->
-            <section class="banner-section">
+            <section class="banner-section" id="banner">
                 <div class="banner-group">
                     <div class="banner-content-left">
                         <h2 class="banner-heading" data-translate="Banner Heading">Let’s Do Business Together</h2>
@@ -415,21 +415,25 @@
                     <div class="footer-col footer-col-middle">
                         <h3 data-translate="Footer Business Heading">Doing Business Together</h3>
                         <ul class="footer-services-list">
-                            <li data-translate="Footer Link What">What we do</li>
-                            <li data-translate="Footer Link Fleets">Our fleets</li>
-                            <li data-translate="Footer Link Offshore">Offshore services</li>
-                            <li data-translate="Footer Link Security">Marine security</li>
-                            <li data-translate="Footer Link Charter">Vessel charter & management</li>
-                            <li data-translate="Footer Link Partnership">Partnerships</li>
+                            <li><a href="index.html#services" data-translate="Footer Link What">What we do</a></li>
+                            <li><a href="fleets.html" data-translate="Footer Link Fleets">Our fleets</a></li>
+                            <li><a href="index.html#offshore" data-translate="Footer Link Offshore">Offshore
+                                    services</a></li>
+                            <li><a href="index.html#security" data-translate="Footer Link Security">Marine security</a>
+                            </li>
+                            <li><a href="index.html#charter" data-translate="Footer Link Charter">Vessel charter &
+                                    management</a></li>
+                            <li><a href="index.html#banner" data-translate="Footer Link Partnership">Partnerships</a>
+                            </li>
                         </ul>
                     </div>
                     <div class="footer-col footer-col-middle">
                         <h3 data-translate="Footer Know Heading">Get to know Us</h3>
                         <ul class="footer-services-list">
-                            <li data-translate="Footer Link About">About Alpha Romeo</li>
-                            <li data-translate="Footer Link News">News & Insights</li>
-                            <li data-translate="Footer Link Careers">Careers</li>
-                            <li data-translate="Footer Link Contact">Contact us</li>
+                            <li><a href="about.html" data-translate="Footer Link About">About Alpha Romeo</a></li>
+                            <li><a href="index.html#insights" data-translate="Footer Link News">News & Insights</a></li>
+                            <li><a href="careers.html" data-translate="Footer Link Careers">Careers</a></li>
+                            <li><a href="contact.html" data-translate="Footer Link Contact">Contact us</a></li>
                         </ul>
                     </div>
                 </div>
@@ -598,13 +602,30 @@
 
             // Update Answer
             faqAnswer.style.opacity = '0';
-            // Use timeout only if standard interaction (optional, but keeping original feel)
-            // For immediate translation updates, we might want to skip timeout, but this function is called on click mainly.
             setTimeout(() => {
                 faqAnswer.innerHTML = `<p data-translate="${key}">${text}</p>`;
                 faqAnswer.style.opacity = '1';
             }, 200);
         }
+
+        // --- NEW: Automated Nav Active State Logic ---
+        function updateNavActiveState() {
+            const currentPath = window.location.pathname.split('/').pop() || 'index.html';
+            const navLinks = document.querySelectorAll('.nav-link');
+
+            navLinks.forEach(link => {
+                const href = link.getAttribute('href');
+                if (href === currentPath) {
+                    link.classList.add('active');
+                } else {
+                    link.classList.remove('active');
+                }
+            });
+        }
+
+        // Run on load
+        window.addEventListener('DOMContentLoaded', updateNavActiveState);
+        // --- End of Nav Logic ---
 
         // Initialize (Moved to after translations definition to be safe? Or keep here but safe due to typeof check)
         // We'll leave it here.

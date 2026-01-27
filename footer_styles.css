@@ -126,16 +126,26 @@
 .footer-services-list li {
     font-family: 'Manrope', sans-serif;
     font-size: 14px;
-    color: #5B5F64;
-    /* Gray color */
     margin-bottom: 12px;
-    cursor: pointer;
-    transition: color 0.2s ease;
 }
 
-.footer-services-list li:hover {
-    text-decoration: underline;
-    color: #000000;
+.footer-services-list a {
+    text-decoration: none;
+    color: #5B5F64;
+    /* Gray color */
+    opacity: 0.9;
+    /* 90% opacity as requested */
+    transition: opacity 0.2s ease;
+    display: inline-block;
+    /* Ensure opacity works/spacing */
+}
+
+.footer-services-list a:hover {
+    text-decoration: none;
+    opacity: 1;
+    /* Full opacity on hover */
+    color: #5B5F64;
+    /* Keep color consistent or allow slight darken if desired, but request implies staying text-like */
 }
 
 .footer-services-list li:last-child {
