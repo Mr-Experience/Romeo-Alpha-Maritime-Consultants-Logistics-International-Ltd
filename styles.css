@@ -657,15 +657,42 @@ body {
 
 .faq-inner-group {
     width: 800px;
-    height: 600px;
+    height: auto;
+    /* Hug content */
     margin: 0;
     display: flex;
     padding: 16px;
-    background-color: transparent;
+    background-color: #F3F4F6;
+    /* Gray background */
     border: 8px solid #6B82AC;
-    border-radius: 40px;
+    border-radius: 12px;
+    /* Reduced radius to 12px */
     position: relative;
     box-sizing: border-box;
+    /* Removed min-height to remove extra spaces */
+}
+
+.faq-answer-panel {
+    height: 300px;
+    /* Fixed height for answers */
+    overflow-y: auto;
+    /* Scroll if content exceeds */
+    padding-right: 8px;
+    /* Avoid scrollbar overlap */
+}
+
+/* Scrollbar for answer panel */
+.faq-answer-panel::-webkit-scrollbar {
+    width: 6px;
+}
+
+.faq-answer-panel::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.faq-answer-panel::-webkit-scrollbar-thumb {
+    background-color: #E5E7EB;
+    border-radius: 20px;
 }
 
 .faq-left,
@@ -1392,6 +1419,21 @@ body {
         /* Ensure it doesn't overlap the icon too much if text is long */
     }
 
+    /* FAQ Section Responsive Custom Breakpoint */
+    @media (max-width: 850px) {
+        .faq-section {
+            padding-left: 16px;
+            padding-right: 16px;
+        }
+
+        .faq-item {
+            height: 52px;
+            /* Fixed height "current one" approx (14+14 pad + ~24 text) */
+            padding: 0 16px;
+            /* Adjust padding to center text vertically with flex if fixed height */
+        }
+    }
+
     /* FAQ Section Responsive */
     .faq-inner-group {
         width: 100%;
@@ -1402,9 +1444,10 @@ body {
         border: none;
     }
 
-    /* "Just one single labelling faqs" - Hide Answer header */
+    /* "Just one single labelling faqs" - Ensure header is visible now that it's moved */
     .faq-right .faq-column-header {
-        display: none;
+        display: block;
+        margin-bottom: 16px;
     }
 
     .faq-left,
@@ -1416,6 +1459,13 @@ body {
     /* Add space between Answer (top) and Questions (bottom) */
     .faq-right {
         margin-bottom: 24px;
+    }
+
+    /* Ensure answer panel expands to show full text without scrolling on mobile */
+    .faq-answer-panel {
+        height: auto;
+        overflow: visible;
+        padding-right: 0;
     }
 
     .faq-divider {

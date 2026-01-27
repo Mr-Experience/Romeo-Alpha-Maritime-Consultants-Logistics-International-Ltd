@@ -111,8 +111,8 @@
 .footer-col-middle {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    /* Center align everything in this column */
+    align-items: flex-start;
+    /* Left align everything in this column */
 }
 
 .footer-services-list {
@@ -120,7 +120,7 @@
     padding: 0;
     margin: 24px 0 0 0;
     /* 24px spacing after heading */
-    text-align: center;
+    text-align: left;
 }
 
 .footer-services-list li {
@@ -256,23 +256,27 @@
 
     .footer-col {
         width: 100%;
-        text-align: center;
+        text-align: left;
+        /* Left align text */
         margin-bottom: 40px;
         padding: 0;
         display: flex;
         flex-direction: column;
-        align-items: center;
+        align-items: flex-start;
+        /* Left align items */
     }
 
     .footer-col h3 {
-        text-align: center;
+        text-align: left;
+        /* Left align heading */
     }
 
     /* Newsletter specific for mobile */
     .footer-newsletter-form {
         width: 100%;
         display: flex;
-        justify-content: center;
+        justify-content: flex-start;
+        /* Left align form */
     }
 
     .input-group {
@@ -281,7 +285,8 @@
     }
 
     .footer-col-middle {
-        align-items: center;
+        align-items: flex-start;
+        /* Left align middle columns */
     }
 
     /* Scroll to Top mobile position */
@@ -289,5 +294,22 @@
         right: 24px;
         bottom: 80px;
         /* Above secondary group/copyright */
+    }
+
+    /* Ensure bottom bars handle wrapping text and stay centered */
+    .footer-secondary-group,
+    .copyright-group {
+        height: auto;
+        min-height: 60px;
+        padding: 16px;
+        box-sizing: border-box;
+        text-align: center;
+    }
+
+    .footer-secondary-group span,
+    .copyright-group span {
+        text-align: center;
+        display: block;
+        line-height: 1.5;
     }
 }
