@@ -261,10 +261,6 @@
         grid-template-columns: 1fr;
     }
 
-    .fleets-hero-title {
-        font-size: 36px;
-    }
-
     .category-header {
         flex-direction: column;
         align-items: flex-start;
@@ -278,24 +274,55 @@
 
 /* Mobile Spacing Optimization (< 500px) */
 @media (max-width: 500px) {
+    .fleets-hero-title {
+        font-size: 36px;
+    }
 
-    .fleets-showcase-section,
-    .category-section {
+    .fleets-hero-subtitle {
+        font-size: 16px;
+    }
+
+    .fleets-intro-section,
+    .fleet-showcase-section {
         padding: 48px 16px !important;
     }
 
-    .fleet-grid,
-    .category-header {
-        gap: 16px !important;
+    .fleet-stats-row {
+        gap: 20px !important;
     }
 
-    .vessel-name,
-    .vessel-type {
-        margin-bottom: 16px !important;
+    .fleet-stat-card {
+        width: 100%;
+        min-width: 0;
+        padding: 24px;
+    }
+
+    .fs-number {
+        font-size: 32px;
+    }
+
+    .fleet-grid {
+        gap: 24px !important;
+    }
+
+    .category-header {
+        margin-bottom: 24px;
+    }
+
+    .category-title {
+        font-size: 24px;
+    }
+
+    .vessel-name {
+        font-size: 18px;
+    }
+
+    .vessel-info {
+        padding: 20px;
     }
 
     .vessel-specs-list li {
-        margin-bottom: 16px !important;
+        margin-bottom: 12px !important;
     }
 
     .vessel-specs-list li:last-child {

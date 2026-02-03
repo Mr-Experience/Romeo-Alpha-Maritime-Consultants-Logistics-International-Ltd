@@ -206,24 +206,32 @@
     }
 
     .career-col-text {
-        align-items: flex-start;
-        /* Keep text left aligned usually better, or center if preferred. User requested professional. Left align text blocks is usually cleaner. */
-        text-align: left;
-    }
-
-    .custom-shape-divider-bottom svg {
-        height: 50px;
+        align-items: center;
+        /* Keep text centered for unified feel on mobile */
+        text-align: center;
     }
 }
 
-/* Mobile Spacing Optimization (< 500px) */
-@media (max-width: 500px) {
+/* Mobile Spacing Optimization (< 515px) */
+@media (max-width: 515px) {
+    .careers-hero-title {
+        font-size: 36px;
+    }
+
+    .careers-hero-subtitle {
+        font-size: 16px;
+    }
+
     .career-section {
         padding: 48px 16px !important;
     }
 
     .career-container {
-        gap: 16px !important;
+        gap: 24px !important;
+    }
+
+    .main-heading {
+        font-size: 28px;
     }
 
     .career-col-text span,
@@ -235,5 +243,10 @@
 
     .body-text p:last-child {
         margin-bottom: 0 !important;
+    }
+
+    .btn-career-cta {
+        width: 100%;
+        box-sizing: border-box;
     }
 }

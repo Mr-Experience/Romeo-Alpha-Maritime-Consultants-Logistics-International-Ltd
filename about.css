@@ -184,6 +184,10 @@
 
 /* Responsive adjustments */
 @media (max-width: 1024px) {
+    .about-hero-title {
+        font-size: 48px;
+    }
+
     .mv-container {
         grid-template-columns: 1fr;
     }
@@ -197,13 +201,24 @@
         width: 100%;
         height: 300px;
     }
+
+    .section-title {
+        font-size: 32px;
+    }
 }
 
 /* Mobile Spacing Optimization (< 500px) */
 @media (max-width: 500px) {
+    .about-hero-title {
+        font-size: 36px;
+    }
+
+    .about-hero-subtitle {
+        font-size: 16px;
+    }
 
     .mission-vision-section,
-    .company-overview,
+    .overview-section,
     .about-stats {
         padding: 48px 16px !important;
     }
@@ -211,16 +226,38 @@
     .mv-container,
     .overview-content,
     .about-stats {
-        gap: 16px !important;
+        gap: 24px !important;
+    }
+
+    .overview-text {
+        text-align: center;
+    }
+
+    .mv-card {
+        padding: 24px;
+    }
+
+    .mv-card h2 {
+        font-size: 24px;
+    }
+
+    .section-title {
+        font-size: 28px;
+        text-align: center;
+    }
+
+    .section-desc {
+        text-align: center;
+        font-size: 15px;
     }
 
     .stat-number {
-        font-size: 36px !important;
-        margin-bottom: 16px !important;
+        font-size: 32px !important;
+        margin-bottom: 8px !important;
     }
 
     .stat-item {
-        margin-bottom: 16px !important;
+        margin-bottom: 24px !important;
     }
 
     .stat-item:last-child {

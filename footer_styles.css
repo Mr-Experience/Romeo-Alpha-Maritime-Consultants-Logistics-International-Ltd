@@ -318,10 +318,15 @@
 /* Mobile Spacing Optimization (< 500px) */
 @media (max-width: 500px) {
     .footer-section {
-        padding: 48px 16px !important;
+        padding: 48px 0 0 0 !important;
     }
 
-    .footer-main-group,
+    .footer-main-group {
+        padding-left: 16px;
+        padding-right: 16px;
+        gap: 16px !important;
+    }
+
     .footer-col,
     .footer-services-list {
         gap: 16px !important;

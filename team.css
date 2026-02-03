@@ -317,32 +317,50 @@
     .team-container {
         grid-template-columns: 1fr;
     }
-
-    .team-hero-title {
-        font-size: 40px;
-    }
 }
 
-/* Mobile Spacing Optimization (< 500px) */
-@media (max-width: 500px) {
+/* Mobile Spacing Optimization (< 510px) */
+@media (max-width: 510px) {
+    .team-hero-title {
+        font-size: 36px;
+    }
 
-    .team-hero-section,
-    .leadership-section,
-    .cta-section {
+    .team-hero-subtitle {
+        font-size: 16px;
+    }
+
+    .team-intro,
+    .founder-section,
+    .featured-member-section,
+    .team-grid-section,
+    .join-team-cta {
         padding: 48px 16px !important;
     }
 
+    .founder-container,
+    .featured-container,
     .team-container {
-        gap: 16px !important;
+        gap: 24px !important;
+    }
+
+    .member-name {
+        font-size: 32px;
+    }
+
+    .member-quote {
+        font-size: 20px;
+    }
+
+    .team-name {
+        font-size: 18px;
+    }
+
+    .cta-title {
+        font-size: 28px;
     }
 
     .cta-title,
     .cta-subtitle {
-        margin-bottom: 16px !important;
-    }
-
-    .leader-info h3,
-    .leader-info .job-title {
         margin-bottom: 16px !important;
     }
 }
