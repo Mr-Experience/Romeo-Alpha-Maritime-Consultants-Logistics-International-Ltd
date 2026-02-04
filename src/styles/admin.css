@@ -155,8 +155,8 @@
     justify-content: space-between;
     align-items: center;
     background-color: #fff;
-    padding: 0 32px;
-    height: 80px;
+    padding: 0 24px;
+    height: 64px;
     border-bottom: 1px solid #eee;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
     z-index: 101;
@@ -168,14 +168,14 @@
     width: 260px;
     background-color: #fff;
     border-right: 1px solid #eee;
-    padding: 24px;
+    padding: 20px;
     display: flex;
     flex-direction: column;
     position: fixed;
     height: 100%;
     z-index: 99;
     transition: transform 0.3s ease;
-    top: 80px;
+    top: 64px;
     /* Below header */
 }
 
@@ -201,7 +201,7 @@
 /* Main Content */
 .dashboard-main {
     flex: 1;
-    padding: 32px;
+    padding: 20px;
     overflow-y: auto;
     margin-left: 260px;
     /* Width of sidebar */
@@ -210,12 +210,12 @@
 .dashboard-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-    gap: 24px;
+    gap: 16px;
 }
 
 .info-card {
     background-color: #fff;
-    padding: 24px;
+    padding: 16px;
     border-radius: 12px;
     border: 1px solid #eaeaea;
 }

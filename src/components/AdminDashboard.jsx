@@ -215,7 +215,7 @@ const AdminDashboard = () => {
                         <div className="fade-in">
 
 
-                            <header style={{ marginBottom: '32px' }}>
+                            <header style={{ marginBottom: '20px' }}>
                                 <h1 style={{ fontSize: '28px', color: '#0A192F', marginBottom: '8px' }}>Dashboard Overview</h1>
                                 <p style={{ color: '#6B82AC' }}>Here is what's happening today.</p>
                             </header>
@@ -280,7 +280,7 @@ const AdminDashboard = () => {
                     {activeTab === 'messages' && (
                         /* existing messages view */
                         <div className="fade-in">
-                            <header style={{ marginBottom: '32px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                            <header style={{ marginBottom: '20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                 <div>
                                     <h1 style={{ fontSize: '28px', color: '#0A192F', marginBottom: '8px' }}>Messages</h1>
                                     <p style={{ color: '#6B82AC' }}>View and manage incoming inquiries.</p>
@@ -350,7 +350,7 @@ const AdminDashboard = () => {
 
                     {activeTab === 'ads' && (
                         <div className="fade-in">
-                            <header style={{ marginBottom: '32px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                            <header style={{ marginBottom: '20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                 <div>
                                     <h1 style={{ fontSize: '28px', color: '#0A192F', marginBottom: '8px' }}>Ads Management</h1>
                                     <p style={{ color: '#6B82AC' }}>Manage promotional images and advertisements.</p>
@@ -505,7 +505,7 @@ const AdminDashboard = () => {
 
                     {activeTab === 'proposals' && (
                         <div className="fade-in">
-                            <header style={{ marginBottom: '32px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                            <header style={{ marginBottom: '20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                 <div>
                                     <h1 style={{ fontSize: '28px', color: '#0A192F', marginBottom: '8px' }}>Partnership Proposals</h1>
                                     <p style={{ color: '#6B82AC' }}>Manage partnership inquiries and collaborations.</p>
@@ -575,7 +575,7 @@ const AdminDashboard = () => {
 
                     {activeTab === 'marketplace' && (
                         <div className="fade-in">
-                            <header style={{ marginBottom: '32px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                            <header style={{ marginBottom: '20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                 <div>
                                     <h1 style={{ fontSize: '28px', color: '#0A192F', marginBottom: '8px' }}>Marine Marketplace</h1>
                                     <p style={{ color: '#6B82AC' }}>Manage vessels for sale, hire, repair and scraps.</p>
@@ -781,7 +781,7 @@ const AdminDashboard = () => {
 
                     {activeTab === 'faq' && (
                         <div className="fade-in">
-                            <header style={{ marginBottom: '32px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                            <header style={{ marginBottom: '20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                 <div>
                                     <h1 style={{ fontSize: '28px', color: '#0A192F', marginBottom: '8px' }}>FAQ Management</h1>
                                     <p style={{ color: '#6B82AC' }}>Create and manage frequently asked questions.</p>
