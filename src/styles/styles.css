@@ -2819,3 +2819,9 @@ body {
         font-size: 24px;
     }
 }
+/* Hero Header Specific Responsiveness */
+@media (max-width: 529px) {
+    .hero-text-group {
+        margin-top: 24px;
+    }
+}
