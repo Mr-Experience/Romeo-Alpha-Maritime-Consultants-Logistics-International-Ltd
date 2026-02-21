@@ -38,7 +38,7 @@ const AdminLogin = () => {
                 // alert("Login Successful! Welcome Admin.");
                 navigate('/admin-dashboard');
             } else {
-                setError('Access Denied: You do not have admin privileges.');
+                setError(t('Access Denied'));
             }
 
         } catch (err) {
@@ -67,7 +67,7 @@ const AdminLogin = () => {
                                 type="email"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
-                                placeholder="admin@romeoalpha.com"
+                                placeholder={t('Admin Email Placeholder')}
                                 className="admin-input"
                                 required
                             />
@@ -99,7 +99,7 @@ const AdminLogin = () => {
                     </div>
 
                     <button type="submit" className="admin-btn" disabled={loading} style={{ opacity: loading ? 0.7 : 1 }}>
-                        {loading ? 'Verifying...' : t('Login')}
+                        {loading ? t('Verifying') : t('Login')}
                     </button>
                 </form>
             </div>

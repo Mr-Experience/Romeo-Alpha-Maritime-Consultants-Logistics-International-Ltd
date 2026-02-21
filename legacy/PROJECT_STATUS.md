@@ -1,5 +1,5 @@
 # Project Status Report
-**Project:** Alpha Romeo Maritime Website
+**Project:** Romeo Alpha Maritime Website
 **Date:** January 27, 2026
 **Status:** 🟢 **READY FOR DEPLOYMENT**
 

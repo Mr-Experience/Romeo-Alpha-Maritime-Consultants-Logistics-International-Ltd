@@ -3,31 +3,14 @@ import { subscribeToNewsletter } from '../services/newsletter';
 import { Link } from 'react-router-dom';
 import { useTranslation } from '../context/TranslationContext';
 import { config } from '../config';
-import { fetchSiteInfo } from '../services/siteInfo';
+
 
 const Footer = () => {
     const { t } = useTranslation();
     const [email, setEmail] = useState('');
     const [status, setStatus] = useState('idle'); // idle, sending, success, error
     const [errorMessage, setErrorMessage] = useState('');
-    const [siteInfo, setSiteInfo] = useState([]);
 
-    useEffect(() => {
-        const loadInfo = async () => {
-            try {
-                const data = await fetchSiteInfo();
-                setSiteInfo(data);
-            } catch (err) {
-                console.error("Error loading footer info:", err);
-            }
-        };
-        loadInfo();
-    }, []);
-
-    const getInfo = (key, fallback) => {
-        const found = siteInfo.find(info => info.info_key.toLowerCase().includes(key.toLowerCase()));
-        return found ? found.info_value : fallback;
-    };
 
     const scrollToTop = () => {
         window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -78,29 +61,30 @@ const Footer = () => {
                     )}
                     {status === 'error' && (
                         <p style={{ color: '#dc3545', fontSize: '13px', marginTop: '8px' }}>
-                            {errorMessage || 'Something went wrong. Please try again.'}
+                            {errorMessage || t('General Error')}
                         </p>
                     )}
                 </div>
                 <div className="footer-col footer-col-middle">
                     <h3>{t('Footer Business Heading')}</h3>
                     <ul className="footer-services-list">
-                        <li><Link to="/#services">{t('Footer Link What')}</Link></li>
-                        <li><Link to="/fleets">{t('Footer Link Fleets')}</Link></li>
-                        <li><Link to="/#offshore">{t('Footer Link Offshore')}</Link></li>
-                        <li><Link to="/#security">{t('Footer Link Security')}</Link></li>
-                        <li><Link to="/#charter">{t('Footer Link Charter')}</Link></li>
-                        <li><Link to="/#banner">{t('Footer Link Partnership')}</Link></li>
+                        <li><Link to="/about">{t('Footer Link What')}</Link></li>
+                        <li><Link to="/marketplace">{t('Marketplace')}</Link></li>
+                        <li><Link to="/service/offshore">{t('Footer Link Offshore')}</Link></li>
+                        <li><Link to="/service/security">{t('Footer Link Security')}</Link></li>
+                        <li><Link to="/service/charter">{t('Footer Link Charter')}</Link></li>
+                        <li><Link to="/contact">{t('Footer Link Partnership')}</Link></li>
                     </ul>
                 </div>
                 <div className="footer-col footer-col-middle">
                     <h3>{t('Footer Know Heading')}</h3>
                     <ul className="footer-services-list">
                         <li><Link to="/about">{t('Footer Link About')}</Link></li>
+                        <li><Link to="/team">{t('Our team')}</Link></li>
                         <li><Link to="/#insights">{t('Footer Link News')}</Link></li>
                         <li><Link to="/careers">{t('Footer Link Careers')}</Link></li>
                         <li><Link to="/contact">{t('Footer Link Contact')}</Link></li>
-                        <li><Link to="/admin-login">Login</Link></li>
+                        <li><Link to="/admin-login">{t('Login')}</Link></li>
                     </ul>
                 </div>
             </div>
@@ -114,7 +98,7 @@ const Footer = () => {
             </div>
 
             <div className="footer-secondary-group">
-                <span>{getInfo('address', t('Footer Address'))}</span>
+                <span>{t('Footer Address')}</span>
             </div>
             <div className="copyright-group">
                 <span>{t('Copyright')}</span>

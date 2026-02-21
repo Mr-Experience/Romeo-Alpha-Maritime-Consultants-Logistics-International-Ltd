@@ -20,7 +20,7 @@ const Careers = () => {
                 </div>
             </section>
 
-            {/* SECTION 1: Working at Alpha Romeo */}
+            {/* SECTION 1: Working at Romeo Alpha */}
             <section className="career-section working-section">
                 <div className="career-container">
                     {/* LEFT: Image */}

@@ -219,35 +219,83 @@ body {
 .language-selector {
     position: relative;
     cursor: pointer;
+    padding: 6px 12px;
+    border-radius: 99px;
+    transition: all 0.2s ease;
+}
+
+.language-selector:hover {
+    background-color: rgba(107, 130, 172, 0.08);
+}
+
+.language-selector.active {
+    background-color: rgba(107, 130, 172, 0.12);
 }
 
 .language-trigger {
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: 8px;
 }
 
 .language-text {
     font-family: 'Manrope', sans-serif;
-    font-size: 16px;
-    font-weight: 500;
-    color: #000000;
+    font-size: 14px;
+    font-weight: 600;
+    color: #1F2937;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.language-text::after {
+    content: '';
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-right: 2px solid #6B82AC;
+    border-bottom: 2px solid #6B82AC;
+    transform: rotate(45deg);
+    margin-bottom: 3px;
+    transition: transform 0.3s ease;
+}
+
+.language-selector.active .language-text::after {
+    transform: rotate(-135deg);
+    margin-bottom: -3px;
 }
 
 .language-dropdown {
     position: absolute;
     top: 100%;
     right: 0;
-    background-color: #FFFFFF;
-    border: 1px solid #E5E7EB;
-    border-radius: 8px;
-    padding: 8px 0;
-    margin-top: 8px;
-    width: 120px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(107, 130, 172, 0.1);
+    border-radius: 16px;
+    padding: 8px;
+    margin-top: 12px;
+    width: 160px;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
     display: none;
     flex-direction: column;
     z-index: 1000;
+    transform-origin: top right;
+    animation: dropdownFadeIn 0.2s ease-out;
+}
+
+@keyframes dropdownFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-8px) scale(0.95);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
 }
 
 .language-selector.active .language-dropdown {
@@ -255,15 +303,28 @@ body {
 }
 
 .lang-option {
-    padding: 8px 16px;
+    padding: 10px 14px;
     font-family: 'Manrope', sans-serif;
     font-size: 14px;
-    color: #1F2937;
-    transition: background 0.2s;
+    font-weight: 500;
+    color: #4B5563;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 }
 
 .lang-option:hover {
-    background-color: #F3F4F6;
+    background-color: #6B82AC;
+    color: #FFFFFF;
+    font-weight: 700;
+}
+
+.lang-option.active {
+    color: #FFFFFF;
+    font-weight: 700;
+    background-color: #6B82AC;
 }
 
 
@@ -1197,7 +1258,7 @@ body {
     object-fit: cover;
 }
 
-/* Why Alpha Romeo Section */
+/* Why Romeo Alpha Section */
 .benefit-section {
     width: 100%;
     padding: 80px 64px 100px 64px;

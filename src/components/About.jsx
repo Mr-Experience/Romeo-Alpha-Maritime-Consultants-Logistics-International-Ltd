@@ -53,6 +53,15 @@ const About = () => {
                     </div>
                 </div>
             </section>
+
+            {/* Team CTA Section */}
+            <section className="team-cta-section" style={{ backgroundColor: '#FFFFFF', padding: '80px 24px', textAlign: 'center' }}>
+                <h2 style={{ fontSize: '32px', fontWeight: '700', color: '#001F3F', marginBottom: '16px' }}>{t('Team Info Heading')}</h2>
+                <p style={{ fontSize: '18px', color: '#5B5F64', maxWidth: '700px', margin: '0 auto 32px' }}>{t('Team Intro')}</p>
+                <Link to="/team">
+                    <button className="standard-btn" style={{ width: 'fit-content', padding: '0 40px', margin: '0 auto', display: 'inline-flex' }}>{t('Meet the Team')}</button>
+                </Link>
+            </section>
         </div>
     );
 };

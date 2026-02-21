@@ -1,29 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from '../context/TranslationContext';
-import { getFaqs } from '../services/faq';
-import { fetchAds } from '../services/ads';
+import { fetchFaqs } from '../services/faq';
 
 const Home = () => {
     const { t } = useTranslation();
     const [faqItems, setFaqItems] = useState([]);
-    const [ads, setAds] = useState([]);
 
     useEffect(() => {
         const loadFaqs = async () => {
-            const faqs = await getFaqs();
+            const faqs = await fetchFaqs();
             setFaqItems(faqs);
         };
-        const loadAds = async () => {
-            try {
-                const data = await fetchAds();
-                setAds(data);
-            } catch (err) {
-                console.error("Ads loading error:", err);
-            }
-        };
         loadFaqs();
-        loadAds();
     }, []);
 
     return (
@@ -76,7 +65,7 @@ const Home = () => {
             </section>
 
             {/* Content Section */}
-            <section className="content-section">
+            <section className="content-section" id="services">
                 <div className="content-stack">
                     <div className="content-upper">
                         <div className="upper-text-group">
@@ -93,7 +82,7 @@ const Home = () => {
                         </div>
                     </div>
                     <div className="content-lower">
-                        <div className="lower-image-container">
+                        <div className="lower-image-container" id="charter">
                             <img src="/images/bottom-1.jpg" alt={t('Tag Charter')} className="lower-content-image" />
                             <div className="image-shadow"></div>
                             <div className="image-overlay-text" dangerouslySetInnerHTML={{ __html: t('Overlay Charter') }}></div>
@@ -101,7 +90,7 @@ const Home = () => {
                                 <button className="overlay-button">{t('Explore Service')}</button>
                             </Link>
                         </div>
-                        <div className="lower-image-container">
+                        <div className="lower-image-container" id="offshore">
                             <img src="/images/bottom-2.jpg" alt={t('Tag Offshore')} className="lower-content-image" />
                             <div className="image-shadow"></div>
                             <div className="image-overlay-text" dangerouslySetInnerHTML={{ __html: t('Overlay Offshore') }}></div>
@@ -109,7 +98,7 @@ const Home = () => {
                                 <button className="overlay-button">{t('Explore Service')}</button>
                             </Link>
                         </div>
-                        <div className="lower-image-container">
+                        <div className="lower-image-container" id="security">
                             <img src="/images/bottom-3.jpg" alt={t('Tag Security')} className="lower-content-image" />
                             <div className="image-shadow"></div>
                             <div className="image-overlay-text" dangerouslySetInnerHTML={{ __html: t('Overlay Security') }}></div>
@@ -121,10 +110,10 @@ const Home = () => {
                 </div>
             </section>
 
-            {/* Why Alpha Romeo Section */}
+            {/* Why Romeo Alpha Section */}
             <section className="benefit-section">
                 <div className="benefit-header">
-                    <h2 className="benefit-heading">{t('Why Alpha Romeo')}</h2>
+                    <h2 className="benefit-heading">{t('Why Romeo Alpha')}</h2>
                     <p className="benefit-subtext">{t('Why Subtext')}</p>
                 </div>
                 <div className="benefit-grid">
@@ -225,46 +214,18 @@ const Home = () => {
                 </div>
                 <div className="ads-ship-strip">
                     <div className="ads-gallery-track">
-                        {ads.length > 0 ? (
-                            // Render Dynamic Ads
-                            [...ads, ...ads].map((ad, i) => (
-                                <div key={`${ad.id}-${i}`} className="ads-gallery-item">
-                                    <a href={ad.link_url || '#'} target="_blank" rel="noopener noreferrer">
-                                        <img src={ad.image_url} alt={ad.title} className="ads-gallery-img" />
-                                    </a>
-                                </div>
-                            ))
-                        ) : (
-                            // Fallback to existing static images
-                            [...Array(2)].map((_, i) => (
-                                <React.Fragment key={i}>
-                                    <div className="ads-gallery-item"><img src="/images/ads-gallery-1.jpg" alt="Ship" className="ads-gallery-img" /></div>
-                                    <div className="ads-gallery-item"><img src="/images/ads-gallery-2.jpg" alt="Workers" className="ads-gallery-img" /></div>
-                                    <div className="ads-gallery-item"><img src="/images/ads-gallery-3.jpg" alt="Refinery" className="ads-gallery-img" /></div>
-                                    <div className="ads-gallery-item"><img src="/images/ads-gallery-4.jpg" alt="Container" className="ads-gallery-img" /></div>
-                                </React.Fragment>
-                            ))
-                        )}
-                    </div>
-
-                </div>
-            </section>
-
-            {/* Banner Section */}
-            <section className="banner-section" id="banner">
-                <div className="banner-group">
-                    <div className="banner-content-left">
-                        <h2 className="banner-heading">{t('Banner Heading')}</h2>
-                        <p className="banner-subtext">{t('Banner Subtext')}</p>
-                        <Link to="/partnership">
-                            <button className="banner-btn">{t('Banner Button')}</button>
-                        </Link>
-                    </div>
-                    <div className="banner-image-right">
-                        <img src="/images/globe-banner.jpg" alt="Global Maritime Network" className="banner-image" />
+                        {[...Array(2)].map((_, i) => (
+                            <React.Fragment key={i}>
+                                <div className="ads-gallery-item"><img src="/images/ads-gallery-1.jpg" alt="Ship" className="ads-gallery-img" /></div>
+                                <div className="ads-gallery-item"><img src="/images/ads-gallery-2.jpg" alt="Workers" className="ads-gallery-img" /></div>
+                                <div className="ads-gallery-item"><img src="/images/ads-gallery-3.jpg" alt="Refinery" className="ads-gallery-img" /></div>
+                                <div className="ads-gallery-item"><img src="/images/ads-gallery-4.jpg" alt="Container" className="ads-gallery-img" /></div>
+                            </React.Fragment>
+                        ))}
                     </div>
                 </div>
             </section>
+
         </>
     );
 };

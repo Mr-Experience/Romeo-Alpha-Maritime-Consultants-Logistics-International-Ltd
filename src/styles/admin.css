@@ -198,6 +198,29 @@
     font-weight: 600;
 }
 
+/* Ensure SVG icons inherit the text color and are visible */
+.dashboard-sidebar-item svg {
+    width: 22px;
+    height: 22px;
+    flex-shrink: 0;
+    display: block;
+    opacity: 1;
+}
+
+.dashboard-sidebar-item span {
+    font-size: 14px;
+    color: inherit;
+}
+
+.dashboard-sidebar-item.logout {
+    color: #6B82AC;
+}
+
+.dashboard-sidebar-item.logout:hover {
+    background-color: #FFF0F0;
+    color: #D32F2F;
+}
+
 /* Main Content */
 .dashboard-main {
     flex: 1;

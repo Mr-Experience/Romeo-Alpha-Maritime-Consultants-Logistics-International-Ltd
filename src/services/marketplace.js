@@ -119,7 +119,8 @@ export const uploadImage = async (file) => {
         const token = getSession();
         if (!token) throw new Error('No authentication token found');
 
-        const fileName = `${Date.now()}_${file.name}`;
+        const sanitizedName = file.name.replace(/\s+/g, '_').replace(/[^a-zA-Z0-9_.-]/g, '');
+        const fileName = `${Date.now()}_${sanitizedName}`;
         // We use a public bucket named 'marketplace'
         const response = await fetch(`${config.supabaseUrl}/storage/v1/object/marketplace/${fileName}`, {
             method: 'POST',

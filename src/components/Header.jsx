@@ -70,7 +70,7 @@ const Header = () => {
         return (
             <header className="main-header" style={{ justifyContent: 'center', top: 0, marginTop: 0, backgroundColor: '#FFFFFF' }}>
                 <Link to="/">
-                    <img src="/images/logo-alpha.jpg" alt="Company Logo" className="logo" />
+                    <img src="/images/logo-alpha.jpg" alt={t('Logo Alt')} className="logo" />
                 </Link>
             </header>
         );
@@ -97,13 +97,15 @@ const Header = () => {
 
             <header className="main-header">
                 <div className="header-left">
-                    <img src="/images/logo-alpha.jpg" alt={t('Logo Alt')} className="logo" />
+                    <Link to="/">
+                        <img src="/images/logo-alpha.jpg" alt={t('Logo Alt')} className="logo" />
+                    </Link>
                 </div>
 
                 <nav className="header-center desktop-nav">
                     <Link to="/" className={`nav-link ${location.pathname === '/' ? 'active' : ''}`}>{t('Home')}</Link>
                     <Link to="/about" className={`nav-link ${location.pathname === '/about' ? 'active' : ''}`}>{t('About us')}</Link>
-                    <Link to="/marketplace" className={`nav-link ${location.pathname === '/marketplace' ? 'active' : ''}`}>{t('Our fleets')}</Link>
+                    <Link to="/marketplace" className={`nav-link ${location.pathname === '/marketplace' ? 'active' : ''}`}>{t('Marketplace')}</Link>
                     <Link to="/team" className={`nav-link ${location.pathname === '/team' ? 'active' : ''}`}>{t('Our team')}</Link>
                     <Link to="/contact" className={`nav-link ${location.pathname === '/contact' ? 'active' : ''}`}>{t('Contact us')}</Link>
                 </nav>
@@ -119,11 +121,11 @@ const Header = () => {
                             <span className="language-text" id="current-lang-text">{language.toUpperCase()}</span>
                         </div>
                         <div className="language-dropdown">
-                            <div className="lang-option" onClick={() => { changeLanguage('en'); setLanguageDropdownOpen(false); }}>English</div>
-                            <div className="lang-option" onClick={() => { changeLanguage('es'); setLanguageDropdownOpen(false); }}>Español</div>
-                            <div className="lang-option" onClick={() => { changeLanguage('fr'); setLanguageDropdownOpen(false); }}>Français</div>
-                            <div className="lang-option" onClick={() => { changeLanguage('de'); setLanguageDropdownOpen(false); }}>Deutsch</div>
-                            <div className="lang-option" onClick={() => { changeLanguage('zh'); setLanguageDropdownOpen(false); }}>中文 (Chinese)</div>
+                            <div className={`lang-option ${language === 'en' ? 'active' : ''}`} onClick={() => { changeLanguage('en'); setLanguageDropdownOpen(false); }}>{t('Lang English')}</div>
+                            <div className={`lang-option ${language === 'es' ? 'active' : ''}`} onClick={() => { changeLanguage('es'); setLanguageDropdownOpen(false); }}>{t('Lang Spanish')}</div>
+                            <div className={`lang-option ${language === 'fr' ? 'active' : ''}`} onClick={() => { changeLanguage('fr'); setLanguageDropdownOpen(false); }}>{t('Lang French')}</div>
+                            <div className={`lang-option ${language === 'de' ? 'active' : ''}`} onClick={() => { changeLanguage('de'); setLanguageDropdownOpen(false); }}>{t('Lang German')}</div>
+                            <div className={`lang-option ${language === 'zh' ? 'active' : ''}`} onClick={() => { changeLanguage('zh'); setLanguageDropdownOpen(false); }}>{t('Lang Chinese')}</div>
                         </div>
                     </div>
                     <button className="btn-get-quotes desktop-cta" onClick={() => navigate('/contact')}>{t('Get Quotes')}</button>
@@ -142,7 +144,7 @@ const Header = () => {
                 <nav className="mobile-nav">
                     <Link to="/" className="nav-link">{t('Home')}</Link>
                     <Link to="/about" className="nav-link">{t('About us')}</Link>
-                    <Link to="/marketplace" className="nav-link">{t('Our fleets')}</Link>
+                    <Link to="/marketplace" className="nav-link">{t('Marketplace')}</Link>
                     <Link to="/team" className="nav-link">{t('Our team')}</Link>
                     <Link to="/contact" className="nav-link">{t('Contact us')}</Link>
                 </nav>

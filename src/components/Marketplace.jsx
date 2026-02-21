@@ -65,7 +65,7 @@ const Marketplace = () => {
             {/* Operations Hero / Search Section */}
             <section className="operations-hero">
                 <div className="operations-container">
-                    <h1 className="operations-title">{t('Operations Page Title')}</h1>
+                    <h1 className="operations-title">{t('Marketplace')}</h1>
                     <p className="operations-subtitle">{t('Operations Page Subtitle')}</p>
                 </div>
             </section>
@@ -79,25 +79,25 @@ const Marketplace = () => {
                                 className={`category-tab ${activeCategory === 'sale' ? 'active' : ''}`}
                                 onClick={() => handleTabClick('sale')}
                             >
-                                {t('Category Offshore')}
+                                {t('Marketplace Sale') || t('Category Offshore')}
                             </button>
                             <button
                                 className={`category-tab ${activeCategory === 'hire' ? 'active' : ''}`}
                                 onClick={() => handleTabClick('hire')}
                             >
-                                {t('Category Logistics')}
+                                {t('Marketplace Hire') || t('Category Logistics')}
                             </button>
                             <button
                                 className={`category-tab ${activeCategory === 'repair' ? 'active' : ''}`}
                                 onClick={() => handleTabClick('repair')}
                             >
-                                {t('Category Charter')}
+                                {t('Marketplace Repair') || t('Category Charter')}
                             </button>
                             <button
                                 className={`category-tab ${activeCategory === 'scrap' ? 'active' : ''}`}
                                 onClick={() => handleTabClick('scrap')}
                             >
-                                {t('Category Port')}
+                                {t('Marketplace Scrap') || t('Category Port')}
                             </button>
                         </div>
                     </div>
@@ -145,10 +145,10 @@ const Marketplace = () => {
                                     <div style={{ display: 'flex', gap: '10px', marginTop: 'auto' }}>
                                         <Link to={`/marketplace/${op.id}`} className="op-card-cta-link" style={{ textDecoration: 'none', flex: 1 }}>
                                             <button className="op-card-cta" style={{ backgroundColor: '#F3FAFF', color: '#0056b3', border: '1px solid #0056b3' }}>
-                                                {t('See Details') || 'See Details'}
+                                                {t('See Details')}
                                             </button>
                                         </Link>
-                                        <Link to={`/marketplace-inquiry/${op.id}`} className="op-card-cta-link" style={{ textDecoration: 'none', flex: 1 }}>
+                                        <Link to={`/marketplace/${op.id}?triggerInquiry=true`} className="op-card-cta-link" style={{ textDecoration: 'none', flex: 1 }}>
                                             <button className="op-card-cta">{t('Reach out')}</button>
                                         </Link>
                                     </div>

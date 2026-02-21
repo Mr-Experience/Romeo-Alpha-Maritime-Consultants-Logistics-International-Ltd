@@ -1,4 +1,5 @@
 // Configuration for Supabase API
+// Configuration for Supabase API
 export const config = {
     // PASTE YOUR SUPABASE URL HERE (e.g., https://xyz.supabase.co)
     supabaseUrl: 'https://kqzxbmvpqcjssusnpepl.supabase.co',
@@ -9,5 +10,6 @@ export const config = {
     // EMAILJS CONFIGURATION (FOR ZOHO MAIL)
     emailjsServiceId: 'service_unyenwd',
     emailjsTemplateId: 'template_vxiuw0b',
-    emailjsPublicKey: '4CIlvIBRGOHJj3KQk'
+    emailjsPublicKey: '4CIlvIBRGOHJj3KQk',
+    contactPhone: '+2348066184330 / +2348055769660'
 };

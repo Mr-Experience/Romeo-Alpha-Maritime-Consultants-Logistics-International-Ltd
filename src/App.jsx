@@ -1,12 +1,11 @@
 import React from 'react';
-import { HashRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import { TranslationProvider } from './context/TranslationContext';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import Home from './components/Home';
 import About from './components/About';
 
-import Team from './components/Team';
 import Careers from './components/Careers';
 import Contact from './components/Contact';
 import Marketplace from './components/Marketplace';
@@ -19,7 +18,7 @@ import ServiceOffshore from './components/ServiceOffshore';
 import ServiceSecurity from './components/ServiceSecurity';
 import AdminLogin from './components/AdminLogin';
 import AdminDashboard from './components/AdminDashboard';
-import PartnershipForm from './components/PartnershipForm';
+import Team from './components/Team';
 // Import legacy styles (now in src/styles)
 import './styles/styles.css';
 import './styles/footer_styles.css';
@@ -59,12 +58,12 @@ const AppContentWithLocation = () => {
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />
 
-        <Route path="/team" element={<Team />} />
+
         <Route path="/careers" element={<Careers />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/marketplace" element={<Marketplace />} />
         <Route path="/marketplace/:id" element={<MarketplaceDetail />} />
-        <Route path="/marketplace-inquiry/:id" element={<MarketplaceInquiry />} />
+
         <Route path="/operation-detail" element={<OperationDetail />} />
         <Route path="/service/maritime" element={<ServiceMaritime />} />
         <Route path="/service/charter" element={<ServiceCharter />} />
@@ -72,7 +71,7 @@ const AppContentWithLocation = () => {
         <Route path="/service/security" element={<ServiceSecurity />} />
         <Route path="/admin-login" element={<AdminLogin />} />
         <Route path="/admin-dashboard" element={<AdminDashboard />} />
-        <Route path="/partnership" element={<PartnershipForm />} />
+        <Route path="/team" element={<Team />} />
       </Routes>
       {!isLogin && !isDashboard && !isMarketplaceDetail && !isMarketplaceInquiry && <Footer />}
     </div>

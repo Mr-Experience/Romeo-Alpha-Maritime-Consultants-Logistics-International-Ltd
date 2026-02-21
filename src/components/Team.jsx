@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { useTranslation } from '../context/TranslationContext';
 import { fetchTeam } from '../services/team';
 import '../styles/team.css';
 
 const Team = () => {
     const { t } = useTranslation();
-    const [teamMembers, setTeamMembers] = React.useState([]);
-    const [loading, setLoading] = React.useState(true);
+    const [teamMembers, setTeamMembers] = useState([]);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         window.scrollTo(0, 0);
@@ -117,7 +118,7 @@ const Team = () => {
                                 </div>
                                 <div className="team-info">
                                     <h3 className="team-name">{t('Sarah Name')}</h3>
-                                    <p className="team-role">Head of Operations</p>
+                                    <p className="team-role">{t('Role Head of Operations')}</p>
                                     <p className="team-bio">
                                         {t('Sarah Bio')}
                                     </p>
@@ -131,7 +132,7 @@ const Team = () => {
                                 </div>
                                 <div className="team-info">
                                     <h3 className="team-name">{t('David Name')}</h3>
-                                    <p className="team-role">Technical Director</p>
+                                    <p className="team-role">{t('Role Technical Director')}</p>
                                     <p className="team-bio">
                                         {t('David Bio')}
                                     </p>

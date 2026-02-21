@@ -41,7 +41,7 @@ const defaultFaqs = [
 ];
 
 // Get all FAQs from Supabase
-export const getFaqs = async () => {
+export const fetchFaqs = async () => {
     try {
         const response = await fetch(`${config.supabaseUrl}/rest/v1/faqs?select=*&order=display_order.asc`, {
             method: 'GET',

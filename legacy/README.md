@@ -1,10 +1,10 @@
-# Alpha Romeo Maritime Consultancy & Logistics International Ltd
+# Romeo Alpha Maritime Consultancy & Logistics International Ltd
 
 > **"Powering Marine Transportation & Offshore Operations"**
 
 ## 📖 Project Overview
 
-This project is the official corporate website for **Alpha Romeo Maritime Consultancy & Logistics International Ltd**, a premier provider of marine transportation, offshore support services, and maritime security solutions. The website is designed to showcase the company's global fleet, experienced leadership team, and commitment to safety and operational excellence.
+This project is the official corporate website for **Romeo Alpha Maritime Consultancy & Logistics International Ltd**, a premier provider of marine transportation, offshore support services, and maritime security solutions. The website is designed to showcase the company's global fleet, experienced leadership team, and commitment to safety and operational excellence.
 
 The site is built as a static multi-page web application, optimized for speed, responsiveness, and deployment simplicity.
 
@@ -59,4 +59,4 @@ Since this is a static site, deployment is straightforward:
 -   **Navigation**: Full linkage between all 6 core pages.
 
 ---
-*© 2026 Alpha Romeo Maritime Consultancy & Logistics International Ltd*
+*© 2026 Romeo Alpha Maritime Consultancy & Logistics International Ltd*

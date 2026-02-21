@@ -4,31 +4,14 @@ import { useTranslation } from '../context/TranslationContext';
 import '../styles/contact.css';
 import { config } from '../config';
 import emailjs from '@emailjs/browser';
-import { fetchSiteInfo } from '../services/siteInfo';
 import { submitMessage } from '../services/messages';
 
 const Contact = () => {
     const { t } = useTranslation();
     const [isSubmitting, setIsSubmitting] = useState(false);
-    const [siteInfo, setSiteInfo] = useState([]);
-
     useEffect(() => {
         window.scrollTo(0, 0);
-        const loadInfo = async () => {
-            try {
-                const data = await fetchSiteInfo();
-                setSiteInfo(data);
-            } catch (err) {
-                console.error("Error loading contact info:", err);
-            }
-        };
-        loadInfo();
     }, []);
-
-    const getInfo = (key, fallback) => {
-        const found = siteInfo.find(info => info.info_key.toLowerCase().includes(key.toLowerCase()));
-        return found ? found.info_value : fallback;
-    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -60,7 +43,7 @@ const Contact = () => {
                     subject: data.subject,
                     message: data.message,
                     time: new Date().toLocaleString(),
-                    to_email: 'info@Alpharomeo.com'
+                    to_email: 'info@romeoalphamaritime.com'
                 },
                 config.emailjsPublicKey
             ).catch(err => {
@@ -107,7 +90,7 @@ const Contact = () => {
                         </div>
                         <div className="strip-text">
                             <h3>{t('Visit Office Heading')}</h3>
-                            <p>{getInfo('address', 'Portharcourt, Nigeria.')}</p>
+                            <p>{t('Label Portharcourt')}</p>
                         </div>
                     </div>
 
@@ -124,7 +107,7 @@ const Contact = () => {
                         </div>
                         <div className="strip-text">
                             <h3>{t('Lets Talk Heading')}</h3>
-                            <p>{getInfo('phone', '+234 814 409 1443')}</p>
+                            <p>{config.contactPhone}</p>
                             <span className="cta-text">{t('Call Us CTA')}</span>
                         </div>
                     </div>
@@ -142,7 +125,7 @@ const Contact = () => {
                         </div>
                         <div className="strip-text">
                             <h3>{t('Inbox Heading')}</h3>
-                            <p>{getInfo('email', 'info@Alpharomeo.com')}</p>
+                            <p>info@romeoalphamaritime.com / Kyoyan99@yahoo.com</p>
                             <span className="cta-text">{t('Email Us CTA')}</span>
                         </div>
                     </div>

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
+import { useTranslation } from '../context/TranslationContext';
 import { ArrowLeft, Send } from 'iconsax-react';
 import { operationsData } from '../data/operationsData';
 import { fetchMarketplaceItems } from '../services/marketplace';
@@ -8,6 +9,7 @@ import emailjs from '@emailjs/browser';
 import { submitMessage } from '../services/messages';
 
 const MarketplaceInquiry = () => {
+    const { t } = useTranslation();
     const { id } = useParams();
     const navigate = useNavigate();
     const [item, setItem] = useState(null);
@@ -74,80 +76,82 @@ const MarketplaceInquiry = () => {
                 config.emailjsPublicKey
             );
 
-            alert('Inquiry sent successfully!');
+            alert(t('Inquiry Success'));
             navigate('/marketplace');
         } catch (error) {
             console.error('Submission Error:', error);
+            console.error('Submission Error:', error);
+            // Show raw error for debugging
             alert(`Error: ${error.message}`);
         } finally {
             setIsSubmitting(false);
         }
     };
 
-    if (loading) return <div style={{ padding: '100px', textAlign: 'center' }}>Loading Form...</div>;
-    if (!item) return <div style={{ padding: '100px', textAlign: 'center' }}>Item not found.</div>;
+    if (loading) return <div style={{ padding: '100px', textAlign: 'center' }}>{t('General Error')}</div>;
+    if (!item) return <div style={{ padding: '100px', textAlign: 'center' }}>{t('Item Not Found')}</div>;
 
     return (
         <div style={{ backgroundColor: '#fff', minHeight: '100vh', padding: 0 }}>
             {/* Header / Back Bar */}
             <div style={{ padding: '24px 16px', borderBottom: '1px solid #eee', display: 'flex', alignItems: 'center', position: 'relative', height: '80px' }}>
                 <Link to={`/marketplace/${id}`} style={{ color: '#001F3F', display: 'flex', alignItems: 'center', gap: '8px', textDecoration: 'none', fontSize: '14px', fontWeight: 'bold', zIndex: 10 }}>
-                    <ArrowLeft size="20" /> Back
+                    <ArrowLeft size="20" /> {t('Back')}
                 </Link>
                 <div style={{ position: 'absolute', width: '100%', left: 0, top: 0, bottom: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '18px', fontWeight: '700', color: '#001F3F', pointerEvents: 'none' }}>
-                    Submit Inquiry
+                    {t('Submit Inquiry Title')}
                 </div>
             </div>
 
             <div style={{ maxWidth: '800px', margin: '0 auto', padding: '60px 20px' }}>
                 <div style={{ marginBottom: '40px' }}>
-                    <h1 style={{ fontSize: '32px', color: '#001F3F', marginBottom: '8px' }}>Send an Inquiry</h1>
-                    <p style={{ color: '#6B82AC' }}>Interested in the <strong>{item.title}</strong>? Please provide your details below.</p>
+                    <h1 style={{ fontSize: '32px', color: '#001F3F', marginBottom: '8px' }}>{t('Submit Inquiry Title')}</h1>
+                    <p style={{ color: '#6B82AC' }}>{t('Interested CTA')} <strong>{item?.title}</strong>? {t('Support Text')}</p>
                 </div>
 
                 <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                        <label style={{ fontSize: '14px', fontWeight: '700', color: '#001F3F' }}>Subject Title</label>
+                        <label style={{ fontSize: '14px', fontWeight: '700', color: '#001F3F' }}>{t('Form Subject')}</label>
                         <input
                             type="text"
                             name="subject"
-                            defaultValue={`Inquiry regarding ${item.title}`}
+                            defaultValue={`${t('Placeholder Subject')} ${item?.title || ''}`}
                             required
                             style={{ padding: '14px', borderRadius: '8px', border: '1px solid #ddd', fontSize: '16px' }}
                         />
                     </div>
 
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                        <label style={{ fontSize: '14px', fontWeight: '700', color: '#001F3F' }}>Contact Person</label>
+                        <label style={{ fontSize: '14px', fontWeight: '700', color: '#001F3F' }}>{t('Contact Person')}</label>
                         <input
                             type="text"
                             required
                             value={formData.name}
                             onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                            placeholder="Full Name / Representative"
+                            placeholder={t('Placeholder Name')}
                             style={{ padding: '14px', borderRadius: '8px', border: '1px solid #ddd', fontSize: '16px' }}
                         />
                     </div>
 
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                        <label style={{ fontSize: '14px', fontWeight: '700', color: '#001F3F' }}>Email Address / Contact Detail</label>
+                        <label style={{ fontSize: '14px', fontWeight: '700', color: '#001F3F' }}>{t('Form Email')}</label>
                         <input
                             type="text"
                             required
                             value={formData.email}
                             onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                            placeholder="e.g. email@example.com or Phone"
+                            placeholder={t('Placeholder Email')}
                             style={{ padding: '14px', borderRadius: '8px', border: '1px solid #ddd', fontSize: '16px' }}
                         />
                     </div>
 
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                        <label style={{ fontSize: '14px', fontWeight: '700', color: '#001F3F' }}>Details of Discussion</label>
+                        <label style={{ fontSize: '14px', fontWeight: '700', color: '#001F3F' }}>{t('Discussion Details')}</label>
                         <textarea
                             required
                             value={formData.message}
                             onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                            placeholder="Share your requirements, budget, or timeline..."
+                            placeholder={t('Placeholder Message')}
                             rows="8"
                             style={{ padding: '14px', borderRadius: '8px', border: '1px solid #ddd', fontSize: '16px', fontFamily: 'inherit', resize: 'vertical' }}
                         ></textarea>
@@ -172,7 +176,7 @@ const MarketplaceInquiry = () => {
                             transition: 'background 0.3s'
                         }}
                     >
-                        {isSubmitting ? 'Sending Request...' : <><Send size="20" variant="Bold" /> Send Inquiry</>}
+                        {isSubmitting ? t('Sending Request') : <><Send size="20" variant="Bold" /> {t('Inquiry Submit')}</>}
                     </button>
                 </form>
             </div>
