@@ -111,6 +111,3 @@ export const deleteMessage = async (id) => {
         throw error;
     }
 };
-
-// Note: fetchMessages, deleteMessage etc. were removed as part of the dashboard cleanup
-// as they are no longer required for administrative review within the app.

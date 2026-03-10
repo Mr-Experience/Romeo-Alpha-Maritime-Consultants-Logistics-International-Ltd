@@ -1,48 +1,49 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from '../context/TranslationContext';
+import { useNotification } from '../context/NotificationContext';
 import { Eye, EyeSlash, User, Lock } from 'iconsax-react';
-import { loginUser, verifyAdminRole, saveSession } from '../services/auth';
+import { loginUser, verifyAdminRole, saveSession, getSession } from '../services/auth';
 import '../styles/admin.css';
 
 const AdminLogin = () => {
     const { t } = useTranslation();
+    const { notify } = useNotification();
     const navigate = useNavigate();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
-    const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setError('');
         setLoading(true);
 
         try {
             // 1. Send Login Request
             const authData = await loginUser(email, password);
 
-            // authData contains { access_token, user: { id, ... }, ... }
-            const accessToken = authData.access_token;
-            const userId = authData.user.id;
-
             // 2. Verify Role
-            const isAdmin = await verifyAdminRole(userId, accessToken);
+            const { isAdmin, full_name } = await verifyAdminRole(authData.user.id, authData.access_token);
 
             if (isAdmin) {
-                // 3. Keep Token Safe
-                saveSession(accessToken, authData.user);
-
-                // 4. Redirect (For now logging success, eventually redirect to dashboard)
-                // alert("Login Successful! Welcome Admin.");
+                // 3. Save Session - Merge the full_name from our DB into user object
+                const userWithMetadata = {
+                    ...authData.user,
+                    user_metadata: {
+                        ...authData.user.user_metadata,
+                        full_name: full_name || authData.user.user_metadata?.full_name
+                    }
+                };
+                saveSession(authData.access_token, userWithMetadata);
+                notify(t('Login Success'), 'success');
                 navigate('/admin-dashboard');
             } else {
-                setError(t('Access Denied'));
+                notify(t('Access Denied'), 'error');
             }
-
         } catch (err) {
-            setError(err.message);
+            console.error('Login error:', err);
+            notify(err.message || t('Login Failed'), 'error');
         } finally {
             setLoading(false);
         }
@@ -57,7 +58,6 @@ const AdminLogin = () => {
                 </div>
 
                 <form onSubmit={handleSubmit} className="admin-login-form">
-                    {error && <div className="admin-error">{error}</div>}
 
                     <div className="admin-input-group">
                         <label className="admin-label">{t('Email Address')}</label>
@@ -67,7 +67,6 @@ const AdminLogin = () => {
                                 type="email"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
-                                placeholder={t('Admin Email Placeholder')}
                                 className="admin-input"
                                 required
                             />
@@ -82,7 +81,6 @@ const AdminLogin = () => {
                                 type={showPassword ? "text" : "password"}
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
-                                placeholder="••••••••"
                                 className="admin-input"
                                 required
                             />

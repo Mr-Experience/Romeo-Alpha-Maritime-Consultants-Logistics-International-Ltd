@@ -1,27 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from '../context/TranslationContext';
-import { fetchTeam } from '../services/team';
 import '../styles/team.css';
 
 const Team = () => {
     const { t } = useTranslation();
-    const [teamMembers, setTeamMembers] = useState([]);
-    const [loading, setLoading] = useState(true);
-
     useEffect(() => {
         window.scrollTo(0, 0);
-        const loadTeam = async () => {
-            try {
-                const data = await fetchTeam();
-                setTeamMembers(data);
-            } catch (err) {
-                console.error("Team loading error:", err);
-            } finally {
-                setLoading(false);
-            }
-        };
-        loadTeam();
     }, []);
 
     return (
@@ -48,12 +33,13 @@ const Team = () => {
                 <div className="founder-container">
                     <div className="founder-image-col">
                         <div className="founder-img-wrapper">
-                            <div className="team-img-placeholder" style={{ backgroundImage: "url('/images/hero-v3.jpg')" }}></div>
+                            <img src="/images/captain-smart-alli.png" alt={t('CEO Name')} className="team-img-main" />
                         </div>
                     </div>
                     <div className="founder-text-col">
                         <span className="member-label">{t('Founder Label')}</span>
-                        <h2 className="member-name">{t('CEO Title')}</h2>
+                        <h2 className="member-name">{t('CEO Name')}</h2>
+                        <h3 className="member-role" style={{ fontSize: '18px', color: '#6B82AC', marginBottom: '16px', fontWeight: '600' }}>{t('CEO Title')}</h3>
                         <p className="member-quote">{t('CEO Quote')}</p>
                         <div className="member-bio">
                             <p>{t('CEO Bio 1')}</p>
@@ -63,86 +49,46 @@ const Team = () => {
                 </div>
             </section>
 
-            {/* Featured Member (Managing Director - Side by Side) */}
-            <section className="featured-member-section">
-                <div className="featured-container">
-                    <div className="featured-text-col">
-                        <span className="member-label">{t('MD Label')}</span>
-                        <h2 className="member-name">{t('James Name')}</h2>
-                        <div className="member-bio">
-                            <p>{t('James Bio 1')}</p>
-                            <p>{t('James Bio 2')}</p>
-                        </div>
-                    </div>
-                    <div className="featured-image-col">
-                        <div className="featured-img-wrapper">
-                            <div className="team-img-placeholder" style={{ backgroundImage: "url('/images/hero-image.jpg')" }}></div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            {/* Leadership Grid */}
-            <section className="team-grid-section">
-                <div className="team-grid-header">
-                    <h2>{t('Core Team Title')}</h2>
+            {/* Operational Gallery */}
+            <section className="leadership-gallery-section">
+                <div className="gallery-header">
+                    <h2>{t('Operational Leadership in Action')}</h2>
                     <div className="header-line"></div>
                 </div>
-                <div className="team-container">
-                    {teamMembers.length > 0 ? (
-                        teamMembers.map((member) => (
-                            <div className="team-card" key={member.id}>
-                                <div className="team-img-wrapper">
-                                    {member.image_url ? (
-                                        <img src={member.image_url} alt={member.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                                    ) : (
-                                        <div className="team-img-placeholder" style={{ backgroundColor: '#F3F4F6' }}></div>
-                                    )}
-                                </div>
-                                <div className="team-info">
-                                    <h3 className="team-name">{member.name}</h3>
-                                    <p className="team-role">{member.role}</p>
-                                    <p className="team-bio">
-                                        {member.bio}
-                                    </p>
-                                </div>
-                            </div>
-                        ))
-                    ) : (
-                        // Fallback/Default Team Members
-                        <>
-                            {/* Team Member 1 */}
-                            <div className="team-card">
-                                <div className="team-img-wrapper">
-                                    <div className="team-img-placeholder" style={{ backgroundColor: '#F3F4F6' }}></div>
-                                </div>
-                                <div className="team-info">
-                                    <h3 className="team-name">{t('Sarah Name')}</h3>
-                                    <p className="team-role">{t('Role Head of Operations')}</p>
-                                    <p className="team-bio">
-                                        {t('Sarah Bio')}
-                                    </p>
-                                </div>
-                            </div>
-
-                            {/* Team Member 2 */}
-                            <div className="team-card">
-                                <div className="team-img-wrapper">
-                                    <div className="team-img-placeholder" style={{ backgroundColor: '#F3F4F6' }}></div>
-                                </div>
-                                <div className="team-info">
-                                    <h3 className="team-name">{t('David Name')}</h3>
-                                    <p className="team-role">{t('Role Technical Director')}</p>
-                                    <p className="team-bio">
-                                        {t('David Bio')}
-                                    </p>
-                                </div>
-                            </div>
-                        </>
-                    )}
+                <div className="gallery-grid">
+                    <div className="gallery-item">
+                        <div className="gallery-img-wrapper">
+                            <img src="/images/captain-bridge.png" alt="Operational Command" />
+                        </div>
+                        <div className="gallery-overlay">
+                            <span>{t('Operational Command')}</span>
+                        </div>
+                    </div>
+                    <div className="gallery-item">
+                        <div className="gallery-img-wrapper">
+                            <img src="/images/captain-office-1.png" alt="Strategic Planning" />
+                        </div>
+                        <div className="gallery-overlay">
+                            <span>{t('Strategic Planning')}</span>
+                        </div>
+                    </div>
+                    <div className="gallery-item">
+                        <div className="gallery-img-wrapper">
+                            <img src="/images/captain-office-2.png" alt="Technical Oversight" />
+                        </div>
+                        <div className="gallery-overlay">
+                            <span>{t('Technical Oversight')}</span>
+                        </div>
+                    </div>
+                    <div className="gallery-item gallery-item-traditional">
+                        <div className="gallery-img-wrapper">
+                            <img src="/images/captain-traditional.png" alt="Cultural Identity" />
+                        </div>
+                        <div className="gallery-overlay">
+                            <span>{t('Leadership & Heritage')}</span>
+                        </div>
+                    </div>
                 </div>
-
-
             </section>
 
             {/* CTA Section */}

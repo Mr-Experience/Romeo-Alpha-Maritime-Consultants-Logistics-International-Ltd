@@ -57,10 +57,10 @@ const Header = () => {
         if (mobileMenuOpen) {
             document.body.style.overflow = 'hidden';
         } else {
-            document.body.style.overflow = 'auto';
+            document.body.style.overflow = '';
         }
         return () => {
-            document.body.style.overflow = 'auto';
+            document.body.style.overflow = '';
         };
     }, [mobileMenuOpen]);
 
@@ -68,7 +68,7 @@ const Header = () => {
 
     if (isLoginPage) {
         return (
-            <header className="main-header" style={{ justifyContent: 'center', top: 0, marginTop: 0, backgroundColor: '#FFFFFF' }}>
+            <header className="main-header" style={{ justifyContent: 'flex-start', paddingLeft: '24px', top: 0, marginTop: 0, backgroundColor: '#FFFFFF' }}>
                 <Link to="/">
                     <img src="/images/logo-alpha.jpg" alt={t('Logo Alt')} className="logo" />
                 </Link>
@@ -83,10 +83,8 @@ const Header = () => {
                     <span className="notice-text">
                         {t('Notice Welcome')}
                     </span>
-                    <div className="close-icon-container" onClick={(e) => {
-                        e.target.closest('.floating-notice').style.display = 'none';
-                        // Simple DOM manipulation for now to match legacy behavior exactly
-                        document.querySelector('.main-header').style.top = '0';
+                    <div className="close-icon-container" onClick={() => {
+                        document.body.classList.add('banner-closed');
                     }}>
                         <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M9 3L3 9M3 3L9 9" stroke="#6B82AC" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />

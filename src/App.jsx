@@ -1,6 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import { TranslationProvider } from './context/TranslationContext';
+import { NotificationProvider } from './context/NotificationContext';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import Home from './components/Home';
@@ -23,22 +24,15 @@ import Team from './components/Team';
 import './styles/styles.css';
 import './styles/footer_styles.css';
 
-// Placeholder components for routes we haven't migrated yet
-const Placeholder = ({ title }) => (
-  <div style={{ padding: '100px 20px', textAlign: 'center' }}>
-    <h2>{title}</h2>
-    <p>This page is being migrated...</p>
-  </div>
-);
-
-
 
 function App() {
   return (
     <TranslationProvider>
-      <Router>
-        <AppContentWithLocation />
-      </Router>
+      <NotificationProvider>
+        <Router>
+          <AppContentWithLocation />
+        </Router>
+      </NotificationProvider>
     </TranslationProvider>
   );
 }

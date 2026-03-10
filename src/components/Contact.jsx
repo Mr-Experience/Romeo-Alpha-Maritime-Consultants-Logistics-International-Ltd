@@ -5,10 +5,13 @@ import '../styles/contact.css';
 import { config } from '../config';
 import emailjs from '@emailjs/browser';
 import { submitMessage } from '../services/messages';
+import { useNotification } from '../context/NotificationContext';
 
 const Contact = () => {
     const { t } = useTranslation();
+    const { notify } = useNotification();
     const [isSubmitting, setIsSubmitting] = useState(false);
+
     useEffect(() => {
         window.scrollTo(0, 0);
     }, []);
@@ -47,17 +50,21 @@ const Contact = () => {
                 },
                 config.emailjsPublicKey
             ).catch(err => {
-                throw new Error(`Email Error: ${err.text || err.message || 'Failed to send email'}`);
+                let errorMsg = err.text || err.message || 'Failed to send email';
+                if (errorMsg.includes('535') || errorMsg.includes('Authentication')) {
+                    errorMsg = 'Zoho Authentication Failed. Please check your App-Specific Password in Zoho and credentials in EmailJS Dashboard.';
+                }
+                throw new Error(`Email Error: ${errorMsg}`);
             });
 
             await Promise.all([supabasePromise, emailjsPromise]);
 
-            alert(t('Form Success Alert'));
+            notify(t('Form Success Alert'), 'success');
             form.reset();
 
         } catch (error) {
             console.error('Submission Error:', error);
-            alert(`Oops! ${error.message}`);
+            notify(`Oops! ${error.message}`, 'error');
         } finally {
             setIsSubmitting(false);
         }

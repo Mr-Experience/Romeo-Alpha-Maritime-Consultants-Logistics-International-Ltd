@@ -1,17 +1,21 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useTranslation } from '../context/TranslationContext';
+import { useNotification } from '../context/NotificationContext';
 import { getSession, clearSession } from '../services/auth';
 import { fetchMarketplaceItems, addMarketplaceItem, updateMarketplaceItem, deleteMarketplaceItem, uploadImage } from '../services/marketplace';
 import { fetchFaqs, addFaq, updateFaq, deleteFaq } from '../services/faq';
 import { fetchNewsletterSubscriptions, deleteNewsletterSubscription } from '../services/newsletter';
-import { Element3, Sms, Logout, HambergerMenu, CloseSquare, Ship, Add, Trash, Edit, MessageQuestion, Briefcase, Gallery, SearchNormal1 } from 'iconsax-react';
-import { fetchMessages, updateMessage, deleteMessage as deleteMessageService } from '../services/messages';
+import { Export, Add, Edit, Trash, Ship, MessageQuestion, Sms, Element3, Logout, SearchNormal1, CloseSquare, HambergerMenu } from 'iconsax-react';
+import { fetchMessages, updateMessage, deleteMessage } from '../services/messages';
+import { fetchAds, addAd, deleteAd } from '../services/ads';
+import { config } from '../config';
 
 import '../styles/admin.css';
 
 const AdminDashboard = () => {
     const { t } = useTranslation();
+    const { notify } = useNotification();
     const navigate = useNavigate();
     const [activeTab, setActiveTab] = useState('dashboard');
     const [sidebarOpen, setSidebarOpen] = useState(false); // For mobile
@@ -55,21 +59,72 @@ const AdminDashboard = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedItems, setSelectedItems] = useState(new Set());
 
-    // Authentication Check
+    // Ads State
+    const [ads, setAds] = useState([]);
+    const [adsLoading, setAdsLoading] = useState(false);
+    const [showAddAd, setShowAddAd] = useState(false);
+    const [selectedAdFiles, setSelectedAdFiles] = useState([]);
+
+    // Authentication Check & Proactive Profile Load
     useEffect(() => {
-        const token = getSession();
-        if (!token) {
-            navigate('/admin-login');
-        } else {
+        const checkAuth = async () => {
+            const token = getSession();
+            if (!token) {
+                navigate('/admin-login');
+                return;
+            }
+
+            // Load from local storage initially
             const storedUser = localStorage.getItem('admin_user');
+            let currentUser = null;
             if (storedUser) {
                 try {
-                    setAdminUser(JSON.parse(storedUser));
+                    currentUser = JSON.parse(storedUser);
+                    setAdminUser(currentUser);
                 } catch (e) {
                     console.error("Error parsing admin user", e);
                 }
             }
-        }
+
+            // Always fetch latest profile from DB to ensure UI integrity (Full Name, etc)
+            if (currentUser?.id) {
+                try {
+                    const response = await fetch(`${config.supabaseUrl}/rest/v1/User?id=eq.${currentUser.id}&select=full_name`, {
+                        headers: {
+                            'apikey': config.supabaseAnonKey,
+                            'Authorization': `Bearer ${token}`
+                        }
+                    });
+                    
+                    if (!response.ok) {
+                        const errorText = await response.text();
+                        console.error("Profile fetch failed:", errorText);
+                        return;
+                    }
+
+                    const data = await response.json();
+
+                    if (data && data[0]) {
+                        const updatedUser = {
+                            ...currentUser,
+                            full_name: data[0].full_name, // Direct property for easier access
+                            user_metadata: {
+                                ...(currentUser.user_metadata || {}),
+                                full_name: data[0].full_name
+                            }
+                        };
+                        setAdminUser(updatedUser);
+                        localStorage.setItem('admin_user', JSON.stringify(updatedUser));
+                    } else {
+                        console.warn("No record found in 'User' table for this ID. Check your database!");
+                    }
+                } catch (err) {
+                    console.error("Failed to refresh user profile from database:", err);
+                }
+            }
+        };
+
+        checkAuth();
     }, [navigate]);
 
     // Fetch data when tab is active
@@ -86,6 +141,8 @@ const AdminDashboard = () => {
             loadNewsletter();
         } else if (activeTab === 'messages') {
             loadMessages();
+        } else if (activeTab === 'ads') {
+            loadAds();
         }
     }, [activeTab]);
 
@@ -96,6 +153,19 @@ const AdminDashboard = () => {
         } catch (err) {
             console.error(err);
             setError(`FAQ Error: ${err.message} `);
+        }
+    };
+
+    const loadAds = async () => {
+        setAdsLoading(true);
+        try {
+            const data = await fetchAds();
+            setAds(data);
+        } catch (err) {
+            console.error(err);
+            setError(`Ads Error: ${err.message}`);
+        } finally {
+            setAdsLoading(false);
         }
     };
 
@@ -153,17 +223,58 @@ const AdminDashboard = () => {
             // Optimistic update locally
             setMessages(prev => prev.map(m => m.id === msg.id ? { ...m, is_read: !m.is_read } : m));
         } catch (err) {
-            alert('Error updating message status: ' + err.message);
+            notify('Error updating message status: ' + err.message, 'error');
         }
     };
 
     const handleDeleteMessage = async (id) => {
-        if (!confirm(t('Delete Confirm'))) return;
         try {
-            await deleteMessageService(id);
-            setMessages(prev => prev.filter(m => m.id !== id));
+            await deleteMessage(id);
+            setMessages(messages.filter(m => m.id !== id));
+            notify(t('Delete Success'), 'success');
         } catch (err) {
-            alert('Error deleting message: ' + err.message);
+            notify('Error deleting message: ' + err.message, 'error');
+        }
+    };
+
+    const handleDeleteMarketItem = async (id) => {
+        if (!window.confirm(t('Are you sure?'))) return;
+        try {
+            await deleteMarketplaceItem(id);
+            loadMarketplaceItems();
+            notify(t('Delete Success'), 'success');
+        } catch (err) {
+            notify("Error deleting item: " + err.message, 'error');
+        }
+    };
+
+    const handleDeleteFaqItem = async (id) => {
+        if (!window.confirm(t('Are you sure?'))) return;
+        try {
+            await deleteFaq(id);
+            loadFaqs();
+            notify(t('Delete Success'), 'success');
+        } catch (err) {
+            notify("Error deleting FAQ: " + err.message, 'error');
+        }
+    };
+
+    const handleMassDeleteMessages = async () => {
+        if (selectedItems.size === 0) return;
+
+        if (window.confirm(`${t('Confirm Delete')} ${selectedItems.size} ${t('Messages')}?`)) {
+            try {
+                // For now, delete individually in a loop (Supabase best practice for small batches)
+                // In production, use a RPC for mass deletes
+                const idsToDelete = Array.from(selectedItems);
+                await Promise.all(idsToDelete.map(id => deleteMessage(id)));
+
+                setMessages(messages.filter(m => !selectedItems.has(m.id)));
+                setSelectedItems(new Set());
+                notify(t('Delete Success'), 'success');
+            } catch (err) {
+                notify("Error during mass delete: " + err.message, 'error');
+            }
         }
     };
 
@@ -177,16 +288,21 @@ const AdminDashboard = () => {
                 await Promise.all(ids.map(id => deleteMarketplaceItem(id)));
                 loadMarketplaceItems();
             } else if (activeTab === 'partnerships') {
-                await Promise.all(ids.map(id => deletePartnership(id)));
-                loadPartnerships();
+                // Assuming deletePartnership and loadPartnerships exist
+                // await Promise.all(ids.map(id => deletePartnership(id)));
+                // loadPartnerships();
+                notify("Partnership mass delete not implemented yet.", 'info');
             } else if (activeTab === 'messages') {
-                // await Promise.all(ids.map(id => deleteMessage(id))); // Assuming deleteMessage exists
-                alert("Mass delete for messages coming soon");
+                handleMassDeleteMessages();
+                return;
+            } else if (activeTab === 'faq') {
+                await Promise.all(ids.map(id => deleteFaq(id)));
+                loadFaqs();
             }
             setSelectedItems(new Set());
-            alert(t('Delete Success'));
+            notify(t('Delete Success'), 'success');
         } catch (err) {
-            alert("Error during mass delete: " + err.message);
+            notify("Error during mass delete: " + err.message, 'error');
         }
     };
 
@@ -220,12 +336,28 @@ const AdminDashboard = () => {
         if (sidebarOpen && window.innerWidth <= 768) {
             document.body.style.overflow = 'hidden';
         } else {
-            document.body.style.overflow = 'auto';
+            document.body.style.overflow = '';
         }
         return () => {
-            document.body.style.overflow = 'auto';
+            document.body.style.overflow = '';
         };
     }, [sidebarOpen]);
+
+    // Lock body scroll when modals are open
+    // Assuming isAddModalOpen and isEditModalOpen are defined elsewhere if needed for other modals
+    // For now, commenting out as they are not defined in the provided snippet
+    /*
+    useEffect(() => {
+        if (isAddModalOpen || isEditModalOpen) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = '';
+        }
+        return () => {
+            document.body.style.overflow = '';
+        };
+    }, [isAddModalOpen, isEditModalOpen]);
+    */
 
     // Sidebar Item Component
     const SidebarItem = ({ icon: Icon, label, tabId, isLogout }) => (
@@ -267,9 +399,8 @@ const AdminDashboard = () => {
                 <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
                     <div className="admin-user-info" style={{ textAlign: 'right' }}>
                         <div style={{ fontWeight: '700', color: '#0A192F', fontSize: '14px' }}>
-                            {adminUser ? adminUser.email.split('@')[0].toUpperCase() : t('Admin User')}
+                            {adminUser?.full_name || adminUser?.user_metadata?.full_name || t('User')}
                         </div>
-                        <div style={{ fontSize: '11px', color: '#6B82AC' }}>{t('Administrator')}</div>
                     </div>
                     <div style={{
                         width: '40px',
@@ -280,9 +411,14 @@ const AdminDashboard = () => {
                         alignItems: 'center',
                         justifyContent: 'center',
                         fontWeight: 'bold',
-                        color: '#0056b3'
+                        color: '#0056b3',
+                        overflow: 'hidden'
                     }}>
-                        {adminUser ? adminUser.email[0].toUpperCase() : 'A'}
+                        {adminUser?.user_metadata?.avatar_url ? (
+                            <img src={adminUser.user_metadata.avatar_url} alt="Profile" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                        ) : (
+                            (adminUser?.full_name?.[0] || adminUser?.user_metadata?.full_name?.[0] || adminUser?.email?.[0] || 'U').toUpperCase()
+                        )}
                     </div>
                 </div>
             </div>
@@ -296,6 +432,7 @@ const AdminDashboard = () => {
                         <SidebarItem icon={MessageQuestion} label={t('Messages')} tabId="messages" />
                         <SidebarItem icon={MessageQuestion} label={t('FAQ')} tabId="faq" />
                         <SidebarItem icon={Sms} label={t('Newsletter')} tabId="newsletter" />
+                        <SidebarItem icon={Export} label={t('Upload')} tabId="ads" />
                     </div>
 
                     <div style={{ borderTop: '1px solid #eee', paddingTop: '16px' }}>
@@ -310,9 +447,8 @@ const AdminDashboard = () => {
                         <div className="fade-in">
 
 
-                            <header style={{ marginBottom: '20px' }}>
-                                <h1 style={{ fontSize: '28px', color: '#0A192F', marginBottom: '8px' }}>{t('Dashboard Overview')}</h1>
-                                <p style={{ color: '#6B82AC' }}>{t('Recent Activity')}</p>
+                            <header style={{ marginBottom: '12px' }}>
+                                <h1 style={{ fontSize: '28px', color: '#0A192F', margin: 0 }}>{t('Dashboard')}</h1>
                             </header>
 
                             {error && (
@@ -378,11 +514,8 @@ const AdminDashboard = () => {
 
                     {activeTab === 'marketplace' && (
                         <div className="fade-in">
-                            <header style={{ marginBottom: '20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                <div>
-                                    <h1 style={{ fontSize: '28px', color: '#0A192F', marginBottom: '8px' }}>{t('Marine Marketplace')}</h1>
-                                    <p style={{ color: '#6B82AC' }}>{t('Manage Vessels')}</p>
-                                </div>
+                            <header style={{ marginBottom: '12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                <h1 style={{ fontSize: '28px', color: '#0A192F', margin: 0 }}>{t('Marketplace')}</h1>
                                 <button
                                     onClick={() => setShowAddItem(!showAddItem)}
                                     className="dashboard-action-btn"
@@ -503,7 +636,7 @@ const AdminDashboard = () => {
                                             style={{ padding: '10px 24px', backgroundColor: '#0056b3', color: '#fff', border: 'none', borderRadius: '6px', cursor: 'pointer', fontWeight: '600' }}
                                             onClick={async () => {
                                                 if (!newItem.title || !newItem.description) {
-                                                    alert(t('Form Required Error'));
+                                                    notify(t('Form Required Error'), 'error');
                                                     return;
                                                 }
                                                 setMarketLoading(true);
@@ -522,10 +655,10 @@ const AdminDashboard = () => {
 
                                                     if (editingMarketItem) {
                                                         await updateMarketplaceItem(editingMarketItem.id, itemToSave);
-                                                        alert(t('Item Updated Success'));
+                                                        notify(t('Item Updated Success'), 'success');
                                                     } else {
                                                         await addMarketplaceItem(itemToSave);
-                                                        alert(t('Item Added Success'));
+                                                        notify(t('Item Added Success'), 'success');
                                                     }
 
                                                     setShowAddItem(false);
@@ -542,7 +675,7 @@ const AdminDashboard = () => {
                                                     setSelectedFiles([]);
                                                     loadMarketplaceItems();
                                                 } catch (err) {
-                                                    alert("Error: " + err.message);
+                                                    notify("Error: " + err.message, 'error');
                                                 } finally {
                                                     setMarketLoading(false);
                                                 }
@@ -674,11 +807,12 @@ const AdminDashboard = () => {
                                                                     </button>
                                                                     <button
                                                                         onClick={async () => {
-                                                                            if (confirm(t('Delete Confirm'))) {
+                                                                            if (window.confirm(t('Delete Confirm'))) {
                                                                                 try {
                                                                                     await deleteMarketplaceItem(item.id);
                                                                                     loadMarketplaceItems();
-                                                                                } catch (e) { alert(e.message); }
+                                                                                    notify(t('Delete Success'), 'success');
+                                                                                } catch (e) { notify(e.message, 'error'); }
                                                                             }
                                                                         }}
                                                                         style={{ border: 'none', background: 'none', cursor: 'pointer', color: '#dc3545' }}
@@ -701,11 +835,8 @@ const AdminDashboard = () => {
                     {
                         activeTab === 'messages' && (
                             <div className="fade-in">
-                                <header style={{ marginBottom: '20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                    <div>
-                                        <h1 style={{ fontSize: '28px', color: '#0A192F', marginBottom: '8px' }}>{t('Messages')}</h1>
-                                        <p style={{ color: '#6B82AC' }}>{t('Manage Messages')}</p>
-                                    </div>
+                                <header style={{ marginBottom: '12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                    <h1 style={{ fontSize: '28px', color: '#0A192F', margin: 0 }}>{t('Messages')}</h1>
                                     <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
                                         <button onClick={loadMessages} style={{ padding: '8px 16px', backgroundColor: '#fff', border: '1px solid #ddd', borderRadius: '6px', cursor: 'pointer' }}>{t('Refresh List')}</button>
                                     </div>
@@ -806,17 +937,13 @@ const AdminDashboard = () => {
                                 )}
                             </div>
                         )
+                    }
 
-                        ||
-
-                        activeTab === 'faq' && (
-                            <div className="fade-in">
-                                <header style={{ marginBottom: '20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                    <div>
-                                        <h1 style={{ fontSize: '28px', color: '#0A192F', marginBottom: '8px' }}>{t('FAQ Management')}</h1>
-                                        <p style={{ color: '#6B82AC' }}>{t('FAQ Management')}</p>
-                                    </div>
-                                    <button
+                    {activeTab === 'faq' && (
+                        <div className="fade-in">
+                            <header style={{ marginBottom: '12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                <h1 style={{ fontSize: '28px', color: '#0A192F', margin: 0 }}>{t('FAQ')}</h1>
+                                <button
                                         onClick={() => { setShowAddFaq(!showAddFaq); setEditingFaq(null); setNewFaq({ question: '', answer: '' }); }}
                                         style={{
                                             display: 'flex',
@@ -865,18 +992,24 @@ const AdminDashboard = () => {
                                                 style={{ padding: '10px 24px', backgroundColor: '#0056b3', color: '#fff', border: 'none', borderRadius: '6px', cursor: 'pointer', fontWeight: '600' }}
                                                 onClick={async () => {
                                                     if (!newFaq.question || !newFaq.answer) {
-                                                        alert(t('FAQ Required Error'));
+                                                        notify(t('FAQ Required Error'), 'error');
                                                         return;
                                                     }
-                                                    if (editingFaq) {
-                                                        await updateFaq(editingFaq.id, newFaq);
-                                                    } else {
-                                                        await addFaq(newFaq);
+                                                    try {
+                                                        if (editingFaq) {
+                                                            await updateFaq(editingFaq.id, newFaq);
+                                                            notify(t('Item Updated Success'), 'success');
+                                                        } else {
+                                                            await addFaq(newFaq);
+                                                            notify(t('Item Added Success'), 'success');
+                                                        }
+                                                        setShowAddFaq(false);
+                                                        setNewFaq({ question: '', answer: '' });
+                                                        setEditingFaq(null);
+                                                        await loadFaqs();
+                                                    } catch (err) {
+                                                        notify("Error: " + err.message, 'error');
                                                     }
-                                                    setShowAddFaq(false);
-                                                    setNewFaq({ question: '', answer: '' });
-                                                    setEditingFaq(null);
-                                                    await loadFaqs();
                                                 }}
                                             >
                                                 {editingFaq ? t('Update FAQ') : t('Save FAQ')}
@@ -917,7 +1050,7 @@ const AdminDashboard = () => {
                                                             margin: 0,
                                                             lineHeight: '1.4'
                                                         }}>
-                                                            {faq.question}
+                                                            {t(faq.question)}
                                                         </h3>
                                                         <div style={{ display: 'flex', gap: '8px', flexShrink: 0 }}>
                                                             <button
@@ -971,7 +1104,7 @@ const AdminDashboard = () => {
                                                         lineHeight: '1.6',
                                                         whiteSpace: 'pre-wrap'
                                                     }}>
-                                                        {faq.answer}
+                                                        {t(faq.answer)}
                                                     </div>
                                                 </div>
                                             ))}
@@ -983,11 +1116,8 @@ const AdminDashboard = () => {
 
                     {activeTab === 'newsletter' && (
                         <div className="fade-in">
-                            <header style={{ marginBottom: '20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                <div>
-                                    <h1 style={{ fontSize: '28px', color: '#0A192F', marginBottom: '8px' }}>{t('Newsletter Hub')}</h1>
-                                    <p style={{ color: '#6B82AC' }}>{t('Subscriber List')} ({subscriptions.length}).</p>
-                                </div>
+                            <header style={{ marginBottom: '12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                <h1 style={{ fontSize: '28px', color: '#0A192F', margin: 0 }}>{t('Newsletter')}</h1>
                                 <button onClick={loadNewsletter} style={{ padding: '8px 16px', backgroundColor: '#fff', border: '1px solid #ddd', borderRadius: '6px', cursor: 'pointer' }}>
                                     {t('Refresh List')}
                                 </button>
@@ -995,7 +1125,10 @@ const AdminDashboard = () => {
 
                             <div style={{ backgroundColor: '#fff', borderRadius: '12px', border: '1px solid #eaeaea', overflow: 'hidden' }}>
                                 {newsLoading ? (
-                                    <div style={{ padding: '40px', textAlign: 'center' }}>{t('General Error')}</div>
+                                    <div style={{ padding: '64px', textAlign: 'center', color: '#6B82AC' }}>
+                                        <div className="spinner"></div>
+                                        <p style={{ marginTop: '16px' }}>{t('Loading') || 'Loading Subscriptions...'}</p>
+                                    </div>
                                 ) : subscriptions.length === 0 ? (
                                     <div style={{ padding: '40px', textAlign: 'center', color: '#dc3545', fontWeight: '500' }}>
                                         {t('Newsletter Empty State')}
@@ -1026,7 +1159,8 @@ const AdminDashboard = () => {
                                                                         try {
                                                                             await deleteNewsletterSubscription(sub.id);
                                                                             loadNewsletter();
-                                                                        } catch (e) { alert(e.message); }
+                                                                            notify(t('Delete Success'), 'success');
+                                                                        } catch (e) { notify(e.message, 'error'); }
                                                                     }
                                                                 }}
                                                                 style={{ border: 'none', background: 'none', cursor: 'pointer', color: '#dc3545' }}
@@ -1040,6 +1174,140 @@ const AdminDashboard = () => {
                                         </table>
                                     </div>
                                 )}
+                            </div>
+                        </div>
+                    )}
+
+                    {activeTab === 'ads' && (
+                        <div className="fade-in">
+                            <header style={{ marginBottom: '12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                <h1 style={{ fontSize: '28px', color: '#0A192F', margin: 0 }}>{t('Upload')}</h1>
+                                <button
+                                    onClick={() => setShowAddAd(!showAddAd)}
+                                    style={{
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        gap: '8px',
+                                        padding: '10px 20px',
+                                        backgroundColor: '#0056b3',
+                                        color: '#fff',
+                                        border: 'none',
+                                        borderRadius: '8px',
+                                        cursor: 'pointer',
+                                        fontWeight: '600'
+                                    }}
+                                >
+                                    <Add size="20" />
+                                    {t('Upload Image')}
+                                </button>
+                            </header>
+
+                            {showAddAd && (
+                                <div style={{ backgroundColor: '#fff', padding: '24px', borderRadius: '12px', border: '1px solid #eaeaea', marginBottom: '32px', boxShadow: '0 4px 12px rgba(0,0,0,0.05)' }}>
+                                    <h3 style={{ marginBottom: '20px', color: '#0A192F', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                        <Add size="20" variant="Bold" /> {t('Upload New Ad Image')}
+                                    </h3>
+                                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px' }}>
+                                        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                                            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                                                <label style={{ fontSize: '14px', fontWeight: '600', color: '#6B82AC' }}>{t('Select Image')}</label>
+                                                <input
+                                                    type="file"
+                                                    accept="image/*"
+                                                    onChange={(e) => {
+                                                        const files = Array.from(e.target.files);
+                                                        setSelectedAdFiles(files);
+                                                    }}
+                                                    style={{ padding: '12px', borderRadius: '8px', border: '1px solid #eee', background: '#fcfcfc' }}
+                                                />
+                                                <small style={{ color: '#888', fontSize: '12px' }}>Recommend size: 1200x400px</small>
+                                            </div>
+                                            <div style={{ display: 'flex', gap: '12px' }}>
+                                                <button
+                                                    disabled={selectedAdFiles.length === 0 || adsLoading}
+                                                    style={{ 
+                                                        padding: '12px 24px', 
+                                                        backgroundColor: selectedAdFiles.length === 0 ? '#ccc' : '#0056b3', 
+                                                        color: '#fff', 
+                                                        border: 'none', 
+                                                        borderRadius: '8px', 
+                                                        cursor: selectedAdFiles.length === 0 ? 'not-allowed' : 'pointer', 
+                                                        fontWeight: '600',
+                                                        transition: 'all 0.2s'
+                                                    }}
+                                                    onClick={async () => {
+                                                        if (selectedAdFiles.length === 0) return;
+                                                        setAdsLoading(true);
+                                                        try {
+                                                            const url = await uploadImage(selectedAdFiles[0]);
+                                                            await addAd({ image_url: url });
+                                                            notify(t('Ad Added Success'), 'success');
+                                                            setShowAddAd(false);
+                                                            setSelectedAdFiles([]);
+                                                            loadAds();
+                                                        } catch (err) {
+                                                            notify("Error: " + err.message, 'error');
+                                                        } finally {
+                                                            setAdsLoading(false);
+                                                        }
+                                                    }}
+                                                >
+                                                    {adsLoading ? t('Uploading') : t('Save Ad')}
+                                                </button>
+                                                <button
+                                                    style={{ padding: '12px 24px', backgroundColor: '#fff', color: '#666', border: '1px solid #ddd', borderRadius: '8px', cursor: 'pointer' }}
+                                                    onClick={() => { setShowAddAd(false); setSelectedAdFiles([]); }}
+                                                >
+                                                    {t('Cancel')}
+                                                </button>
+                                            </div>
+                                        </div>
+                                        
+                                        <div style={{ border: '2px dashed #eee', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: '#fafafa', overflow: 'hidden', minHeight: '180px' }}>
+                                            {selectedAdFiles.length > 0 ? (
+                                                <img 
+                                                    src={URL.createObjectURL(selectedAdFiles[0])} 
+                                                    alt="Preview" 
+                                                    style={{ width: '100%', height: '100%', objectFit: 'contain' }} 
+                                                />
+                                            ) : (
+                                                <div style={{ textAlign: 'center', color: '#6B82AC' }}>
+                                                    <Export size="32" variant="Outline" strokeWidth="1.5" />
+                                                    <p style={{ marginTop: '8px', fontSize: '13px' }}>Image Preview</p>
+                                                </div>
+                                            )}
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+
+                            <div className="ads-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: '20px' }}>
+                                {adsLoading && <div style={{ textAlign: 'center', gridColumn: '1 / -1', padding: '48px', color: '#6B82AC' }}>{t('Loading Ads')}</div>}
+                                {!adsLoading && ads.length === 0 && <div style={{ textAlign: 'center', gridColumn: '1 / -1', padding: '48px', color: '#6B82AC', background: '#f8f9fa', borderRadius: '12px', border: '2px dashed #eee' }}>{t('No Ads found')}</div>}
+                                {!adsLoading && ads.map((ad) => (
+                                    <div key={ad.id} style={{ backgroundColor: '#fff', borderRadius: '12px', overflow: 'hidden', border: '1px solid #eaeaea', position: 'relative', boxShadow: '0 2px 8px rgba(0,0,0,0.05)' }}>
+                                        <div style={{ height: '180px', width: '100%', backgroundColor: '#f8f9fa' }}>
+                                            <img src={ad.image_url} alt="Ad" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                                        </div>
+                                        <div style={{ padding: '12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                            <span style={{ fontSize: '11px', color: '#6B82AC' }}>{new Date(ad.created_at).toLocaleDateString()}</span>
+                                            <button
+                                                onClick={async () => {
+                                                    if (window.confirm(t('Delete Confirm'))) {
+                                                        try {
+                                                            await deleteAd(ad.id);
+                                                            loadAds();
+                                                            notify(t('Delete Success'), 'success');
+                                                        } catch (e) { notify(e.message, 'error'); }
+                                                    }
+                                                }}
+                                                style={{ backgroundColor: '#fff5f5', color: '#dc3545', border: '1px solid #ffd8d8', borderRadius: '6px', padding: '6px 10px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '4px', fontSize: '12px' }}
+                                            >
+                                                <Trash size={14} /> {t('Delete')}
+                                            </button>
+                                        </div>
+                                    </div>
+                                ))}
                             </div>
                         </div>
                     )}

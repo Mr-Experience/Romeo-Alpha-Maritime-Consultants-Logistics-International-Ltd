@@ -8,11 +8,13 @@ import '../styles/operations.css';
 import { fetchMarketplaceItems } from '../services/marketplace';
 import emailjs from '@emailjs/browser';
 import { submitMessage } from '../services/messages';
+import { useNotification } from '../context/NotificationContext';
 
 const MarketplaceDetail = () => {
     const { id } = useParams();
     const location = useLocation();
     const { t } = useTranslation();
+    const { notify } = useNotification();
     const inquiryRef = useRef(null);
     const [item, setItem] = useState(null);
     const [allItems, setAllItems] = useState([]);
@@ -125,12 +127,12 @@ const MarketplaceDetail = () => {
                 config.emailjsPublicKey
             );
 
-            alert(t('Inquiry Success'));
+            notify(t('Inquiry Success'), 'success');
             setShowInquiryForm(false);
             setFormData({ name: '', email: '', message: '' });
         } catch (error) {
             console.error('Submission Error:', error);
-            alert(`Error: ${error.message}`);
+            notify(`Error: ${error.message}`, 'error');
         } finally {
             setIsSubmitting(false);
         }
@@ -158,111 +160,128 @@ const MarketplaceDetail = () => {
     }
 
     return (
-        <div className="marketplace-detail-page" style={{ backgroundColor: '#fff' }}>
-            {/* Page Header / Back Button Only */}
-            <div style={{ borderBottom: '1px solid #eee', position: 'sticky', top: 0, backgroundColor: '#fff', zIndex: 100 }}>
-                <div className="detail-container" style={{ display: 'flex', alignItems: 'center', padding: '16px 16px' }}>
-                    <Link to="/marketplace" style={{ color: '#001F3F', display: 'flex', alignItems: 'center', gap: '8px', textDecoration: 'none', fontSize: '14px', fontWeight: '600' }}>
-                        <ArrowLeft size="18" /> {t('Back')}
+        <div className="marketplace-detail-page">
+            {/* Persistent Back Button Strip */}
+            <div className="detail-navigation-bar">
+                <div className="nav-flex-wrapper">
+                    <Link to="/marketplace" className="back-circle-btn" aria-label="Go Back">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#001F3F" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                            <path d="M19 12H5M12 19l-7-7 7-7" />
+                        </svg>
                     </Link>
                 </div>
             </div>
 
-            <section className="detail-main-content" style={{ paddingTop: '60px', paddingBottom: '80px' }}>
+            <main className="detail-main-wrapper">
                 <div className="detail-container">
-                    <div className="detail-grid">
-                        {/* Gallery Section */}
-                        <div className="detail-gallery-column">
-                            <div className="main-display-image">
+                    <div className="detail-layout">
+                        
+                        {/* LEFT: GALLERY */}
+                        <div className="detail-media-box">
+                            <div className="detail-active-image">
                                 <img src={activeImage} alt={item.title} />
                             </div>
                             {item.gallery && item.gallery.length > 1 && (
-                                <div className="thumbnail-grid">
+                                <div className="detail-gallery-strip">
                                     {item.gallery.map((img, idx) => (
                                         <div
                                             key={idx}
-                                            className={`thumbnail-item ${activeImage === img ? 'active' : ''}`}
+                                            className={`detail-thumb-btn ${activeImage === img ? 'is-active' : ''}`}
                                             onClick={() => setActiveImage(img)}
                                         >
-                                            <img src={img} alt={`${item.title} thumbnail ${idx + 1}`} />
+                                            <img src={img} alt={`${item.title} - ${idx + 1}`} />
                                         </div>
                                     ))}
                                 </div>
                             )}
                         </div>
 
-                        {/* Info Section */}
-                        <div className="info-card">
-                            <div style={{ marginBottom: '20px' }}>
-                                <span className="detail-category-tag" style={{ backgroundColor: '#E6F1FF', color: '#0056b3', padding: '6px 12px', borderRadius: '4px', fontSize: '12px', fontWeight: 'bold' }}>
-                                    {t('Marketplace ' + item.category.charAt(0).toUpperCase() + item.category.slice(1)).toUpperCase()}
+                        {/* RIGHT: CONTENT */}
+                        <div className="detail-info-box">
+                            <div className="detail-hero-info">
+                                <span className="category-pill">
+                                    {t('Marketplace ' + item.category.charAt(0).toUpperCase() + item.category.slice(1))}
                                 </span>
-                                <h1 className="detail-title" style={{ fontSize: '24px', marginTop: '8px', marginBottom: '4px', color: '#001F3F' }}>{item.title}</h1>
-                                {item.price && <div style={{ fontSize: '22px', fontWeight: 'bold', color: '#00B341' }}>{item.price.toString().startsWith('₦') ? item.price : `₦${item.price}`}</div>}
+                                <h1 className="detail-main-title">{item.title}</h1>
+                                {item.price && <div className="detail-main-price">{item.price.toString().startsWith('₦') ? item.price : `₦${item.price}`}</div>}
                             </div>
 
-                            <h3><Information size="20" variant="Bulk" color="#001F3F" /> {t('Item Description')}</h3>
-                            <p className="description-text">{item.longDescription || item.description}</p>
-
-                            <div className="specifications-list">
-                                <h4>{t('Key Specifications')}</h4>
-                                <ul>
-                                    <li><strong>{t('Label Category')}</strong> {t('Marketplace ' + item.category.charAt(0).toUpperCase() + item.category.slice(1))}</li>
-                                    <li><strong>{t('Label Availability')}</strong> {item.availability || t('Immediate')}</li>
-                                    <li><strong>{t('Label Location')}</strong> {item.location || t('Default Location')}</li>
-                                    {item.dynamicTags && item.dynamicTags.length > 0 ? (
-                                        <li><strong>{t('Label Tags')}</strong> {item.dynamicTags.join(', ')}</li>
-                                    ) : item.tags && item.tags.length > 0 && (
-                                        <li><strong>{t('Label Tags')}</strong> {item.tags.join(', ')}</li>
-                                    )}
-                                </ul>
+                            <div className="detail-description-group">
+                                <h3 className="detail-subheading">
+                                    <Information size="18" variant="Bold" /> {t('Item Description')}
+                                </h3>
+                                <p className="detail-text-body">{item.longDescription || item.description}</p>
                             </div>
 
-                            <div className="inquiry-actions" ref={inquiryRef}>
-                                <div className="inquiry-actions">
-                                    {!showInquiryForm ? (
-                                        <button
-                                            onClick={() => setShowInquiryForm(true)}
-                                            className="action-btn-primary"
-                                            style={{ border: 'none', cursor: 'pointer', fontSize: '16px', padding: '16px 32px', display: 'flex', width: '100%', borderRadius: '8px', alignItems: 'center', justifyContent: 'center', gap: '8px' }}
-                                        >
-                                            <Sms size="20" variant="Bulk" /> {t('Send Inquiry Detail')}
-                                        </button>
-                                    ) : (
-                                        <div style={{ marginTop: '20px', padding: '20px', border: '1px solid #eee', borderRadius: '8px', backgroundColor: '#f9f9f9' }}>
-                                            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '16px' }}>
-                                                <h3 style={{ margin: 0, fontSize: '18px' }}>{t('Submit Inquiry Title')}</h3>
-                                                <button onClick={() => setShowInquiryForm(false)} style={{ background: 'none', border: 'none', cursor: 'pointer' }}><CloseCircle size="20" color="#666" /></button>
-                                            </div>
-                                            <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-                                                <div>
-                                                    <label style={{ fontSize: '14px', fontWeight: 'bold' }}>{t('Form Subject')}</label>
-                                                    <input type="text" name="subject" defaultValue={item.title} required style={{ width: '100%', padding: '10px', marginTop: '4px', borderRadius: '4px', border: '1px solid #ddd' }} />
-                                                </div>
-                                                <div>
-                                                    <label style={{ fontSize: '14px', fontWeight: 'bold' }}>{t('Contact Person')}</label>
-                                                    <input type="text" name="name" value={formData.name} onChange={handleInputChange} placeholder={t('Placeholder Name')} required style={{ width: '100%', padding: '10px', marginTop: '4px', borderRadius: '4px', border: '1px solid #ddd' }} />
-                                                </div>
-                                                <div>
-                                                    <label style={{ fontSize: '14px', fontWeight: 'bold' }}>{t('Form Email')}</label>
-                                                    <input type="email" name="email" value={formData.email} onChange={handleInputChange} placeholder={t('Placeholder Email')} required style={{ width: '100%', padding: '10px', marginTop: '4px', borderRadius: '4px', border: '1px solid #ddd' }} />
-                                                </div>
-                                                <div>
-                                                    <label style={{ fontSize: '14px', fontWeight: 'bold' }}>{t('Discussion Details')}</label>
-                                                    <textarea name="message" value={formData.message} onChange={handleInputChange} placeholder={t('Placeholder Message')} rows="4" required style={{ width: '100%', padding: '10px', marginTop: '4px', borderRadius: '4px', border: '1px solid #ddd' }}></textarea>
-                                                </div>
-                                                <button type="submit" disabled={isSubmitting} style={{ backgroundColor: '#0056b3', color: '#fff', padding: '12px', borderRadius: '4px', border: 'none', fontWeight: 'bold', cursor: 'pointer' }}>
-                                                    {isSubmitting ? t('Sending Request') : t('Inquiry Submit')}
-                                                </button>
-                                            </form>
+                            <div className="detail-specs-group">
+                                <h3 className="detail-subheading">{t('Key Specifications')}</h3>
+                                <div className="specs-flat-list">
+                                    <div className="spec-flat-item">
+                                        <span className="spec-label">{t('Label Availability')}</span>
+                                        <span className="spec-value">{item.availability || t('Immediate')}</span>
+                                    </div>
+                                    <div className="spec-flat-item">
+                                        <span className="spec-label">{t('Label Location')}</span>
+                                        <span className="spec-value">{item.location || t('Default Location')}</span>
+                                    </div>
+                                    {(item.dynamicTags?.length > 0 || item.tags?.length > 0) && (
+                                        <div className="spec-flat-item">
+                                            <span className="spec-label">{t('Label Tags')}</span>
+                                            <span className="spec-value">{(item.dynamicTags || item.tags).join(', ')}</span>
                                         </div>
                                     )}
                                 </div>
                             </div>
+
+                            <div className="detail-actions-footer" style={{ marginTop: 'auto' }}>
+                                <button
+                                    onClick={() => setShowInquiryForm(true)}
+                                    className="btn-primary-action"
+                                >
+                                    <Sms size="22" variant="Bulk" /> {t('Send Inquiry Detail')}
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </section>
+            </main>
+
+            {/* MODAL OVERLAY */}
+            {showInquiryForm && (
+                <div className="inquiry-modal-overlay">
+                    <div className="inquiry-modal-content">
+                        <div className="modern-inquiry-box">
+                            <div className="inquiry-box-header">
+                                <h4>{t('Submit Inquiry Title')}</h4>
+                                <button onClick={() => setShowInquiryForm(false)} className="inquiry-close-x">
+                                    <CloseCircle size="28" color="#A0AEC0" />
+                                </button>
+                            </div>
+                            <form onSubmit={handleSubmit} className="modern-form">
+                                <div className="modern-field">
+                                    <label>{t('Form Subject')}</label>
+                                    <input type="text" name="subject" defaultValue={item.title} required readOnly className="readonly-input" />
+                                </div>
+                                <div className="modern-field">
+                                    <label>{t('Contact Person')}</label>
+                                    <input type="text" name="name" value={formData.name} onChange={handleInputChange} placeholder={t('Placeholder Name')} required />
+                                </div>
+                                <div className="modern-field">
+                                    <label>{t('Form Email')}</label>
+                                    <input type="email" name="email" value={formData.email} onChange={handleInputChange} placeholder={t('Placeholder Email')} required />
+                                </div>
+                                <div className="modern-field">
+                                    <label>{t('Discussion Details')}</label>
+                                    <textarea name="message" value={formData.message} onChange={handleInputChange} placeholder={t('Placeholder Message')} rows="4" required></textarea>
+                                </div>
+                                <button type="submit" disabled={isSubmitting} className="btn-modern-submit">
+                                    {isSubmitting ? t('Sending Request') : t('Inquiry Submit')}
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

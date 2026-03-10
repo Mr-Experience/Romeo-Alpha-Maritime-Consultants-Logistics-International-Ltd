@@ -7,9 +7,11 @@ import { fetchMarketplaceItems } from '../services/marketplace';
 import { config } from '../config';
 import emailjs from '@emailjs/browser';
 import { submitMessage } from '../services/messages';
+import { useNotification } from '../context/NotificationContext';
 
 const MarketplaceInquiry = () => {
     const { t } = useTranslation();
+    const { notify } = useNotification();
     const { id } = useParams();
     const navigate = useNavigate();
     const [item, setItem] = useState(null);
@@ -76,13 +78,15 @@ const MarketplaceInquiry = () => {
                 config.emailjsPublicKey
             );
 
-            alert(t('Inquiry Success'));
-            navigate('/marketplace');
+            notify(t('Inquiry Success'), 'success');
+            setTimeout(() => navigate('/marketplace'), 2000);
         } catch (error) {
             console.error('Submission Error:', error);
-            console.error('Submission Error:', error);
-            // Show raw error for debugging
-            alert(`Error: ${error.message}`);
+            let errorMsg = error.message;
+            if (errorMsg.includes('535') || errorMsg.includes('Authentication')) {
+                errorMsg = 'Zoho Authentication Failed. Please check your App-Specific Password in Zoho and credentials in EmailJS Dashboard.';
+            }
+            notify(`Oops! ${errorMsg}`, 'error');
         } finally {
             setIsSubmitting(false);
         }

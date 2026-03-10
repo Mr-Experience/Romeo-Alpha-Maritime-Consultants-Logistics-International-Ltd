@@ -1,9 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { subscribeToNewsletter } from '../services/newsletter';
 import { Link } from 'react-router-dom';
 import { useTranslation } from '../context/TranslationContext';
-import { config } from '../config';
-
 
 const Footer = () => {
     const { t } = useTranslation();
@@ -97,8 +95,9 @@ const Footer = () => {
                 <span>{t('Scroll Top')}</span>
             </div>
 
-            <div className="footer-secondary-group">
+            <div className="footer-secondary-group" style={{ display: 'flex', flexDirection: 'column', gap: '8px', alignItems: 'center' }}>
                 <span>{t('Footer Address')}</span>
+                <span style={{ fontSize: '12px', opacity: 0.8, fontWeight: '500' }}>{t('CAC Registration')}</span>
             </div>
             <div className="copyright-group">
                 <span>{t('Copyright')}</span>

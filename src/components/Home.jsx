@@ -2,21 +2,27 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from '../context/TranslationContext';
 import { fetchFaqs } from '../services/faq';
+import { fetchAds } from '../services/ads';
 
 const Home = () => {
     const { t } = useTranslation();
     const [faqItems, setFaqItems] = useState([]);
+    const [ads, setAds] = useState([]);
 
     useEffect(() => {
-        const loadFaqs = async () => {
-            const faqs = await fetchFaqs();
+        const loadInitialData = async () => {
+            const [faqs, adsData] = await Promise.all([
+                fetchFaqs(),
+                fetchAds()
+            ]);
             setFaqItems(faqs);
+            setAds(adsData);
         };
-        loadFaqs();
+        loadInitialData();
     }, []);
 
     return (
-        <>
+        <div className="landing-page">
             {/* Hero Section */}
             <section className="hero-section">
                 <div className="hero-image-container">
@@ -172,7 +178,7 @@ const Home = () => {
                         {faqItems.map((faq, index) => (
                             <details key={faq.id || index} className="faq-item-new" name="faq-accordion">
                                 <summary className="faq-question">
-                                    <span>{faq.question}</span>
+                                    <span>{t(faq.question)}</span>
                                     <div className="faq-icon-wrapper">
                                         <svg className="faq-chevron" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                                             <polyline points="6 9 12 15 18 9"></polyline>
@@ -180,7 +186,7 @@ const Home = () => {
                                     </div>
                                 </summary>
                                 <div className="faq-answer" style={{ whiteSpace: 'pre-wrap' }}>
-                                    {faq.answer}
+                                    {t(faq.answer)}
                                 </div>
                             </details>
                         ))}
@@ -214,19 +220,31 @@ const Home = () => {
                 </div>
                 <div className="ads-ship-strip">
                     <div className="ads-gallery-track">
-                        {[...Array(2)].map((_, i) => (
-                            <React.Fragment key={i}>
-                                <div className="ads-gallery-item"><img src="/images/ads-gallery-1.jpg" alt="Ship" className="ads-gallery-img" /></div>
-                                <div className="ads-gallery-item"><img src="/images/ads-gallery-2.jpg" alt="Workers" className="ads-gallery-img" /></div>
-                                <div className="ads-gallery-item"><img src="/images/ads-gallery-3.jpg" alt="Refinery" className="ads-gallery-img" /></div>
-                                <div className="ads-gallery-item"><img src="/images/ads-gallery-4.jpg" alt="Container" className="ads-gallery-img" /></div>
-                            </React.Fragment>
-                        ))}
+                        {ads && ads.length > 0 ? (
+                            [...Array(3)].map((_, i) => (
+                                <React.Fragment key={i}>
+                                    {ads.map((ad, index) => (
+                                        <div className="ads-gallery-item" key={`${i}-${index}`}>
+                                            <img src={ad.image_url} alt={`Ad ${index}`} className="ads-gallery-img" />
+                                        </div>
+                                    ))}
+                                </React.Fragment>
+                            ))
+                        ) : (
+                            [...Array(2)].map((_, i) => (
+                                <React.Fragment key={i}>
+                                    <div className="ads-gallery-item"><img src="/images/ads-gallery-1.jpg" alt="Ship" className="ads-gallery-img" /></div>
+                                    <div className="ads-gallery-item"><img src="/images/ads-gallery-2.jpg" alt="Workers" className="ads-gallery-img" /></div>
+                                    <div className="ads-gallery-item"><img src="/images/ads-gallery-3.jpg" alt="Refinery" className="ads-gallery-img" /></div>
+                                    <div className="ads-gallery-item"><img src="/images/ads-gallery-4.jpg" alt="Container" className="ads-gallery-img" /></div>
+                                </React.Fragment>
+                            ))
+                        )}
                     </div>
                 </div>
             </section>
 
-        </>
+        </div>
     );
 };
 

@@ -31,9 +31,8 @@ export const loginUser = async (email, password) => {
 // Step 3 & 4: Get User Role and Verify
 export const verifyAdminRole = async (userId, accessToken) => {
     try {
-        // Fetch user details from the 'User' table finding by auth_id
-        // Note: The screenshots suggest checking the 'User' table where auth_id == USER_ID
-        const response = await fetch(`${config.supabaseUrl}/rest/v1/User?auth_id=eq.${userId}&select=role`, {
+        // Fetch user details from the 'User' table finding by id (which user copies from auth.users)
+        const response = await fetch(`${config.supabaseUrl}/rest/v1/User?id=eq.${userId}&select=role,full_name`, {
             method: 'GET',
             headers: {
                 'apikey': config.supabaseAnonKey,
@@ -52,13 +51,14 @@ export const verifyAdminRole = async (userId, accessToken) => {
             throw new Error('User record not found');
         }
 
-        const userRole = data[0].role;
+        const userRecord = data[0];
+        const isAdmin = userRecord.role === 'admin';
 
         // Check if role is admin
-        return userRole === 'admin';
+        return { isAdmin, full_name: userRecord.full_name };
     } catch (error) {
         console.error("Role Verification Error:", error);
-        return false;
+        return { isAdmin: false, full_name: null };
     }
 };
 

@@ -5,38 +5,38 @@ import { getSession } from './auth';
 const defaultFaqs = [
     {
         id: 'default-1',
-        question: 'What maritime services does Romeo Alpha offer?',
-        answer: 'Romeo Alpha provides comprehensive maritime services including vessel chartering, offshore support, marine security escort services, ship brokerage, cargo logistics, fleet management, and oil & gas offshore operations across coastal and international waters.'
+        question: 'FAQ_Q1',
+        answer: 'FAQ_A1'
     },
     {
         id: 'default-2',
-        question: 'What areas do you operate in?',
-        answer: 'We operate globally across major shipping routes and offshore locations. Our primary coverage includes West African waters, the Gulf of Guinea, Mediterranean Sea, and international shipping lanes connecting Africa, Europe, and the Americas.'
+        question: 'FAQ_Q2',
+        answer: 'FAQ_A2'
     },
     {
         id: 'default-3',
-        question: 'How do I request a quote for your services?',
-        answer: 'You can request a quote by clicking the "Get Quotes" button on our website, contacting us via email, or calling our 24/7 operations center. Our team typically responds within 24 hours with a detailed proposal tailored to your specific requirements.'
+        question: 'FAQ_Q3',
+        answer: 'FAQ_A3'
     },
     {
         id: 'default-4',
-        question: 'What types of vessels are in your fleet?',
-        answer: 'Our fleet includes offshore support vessels (OSVs), anchor handling tugs (AHTS), platform supply vessels (PSVs), crew boats, tugboats, and security escort vessels. All vessels are modern, well-maintained, and comply with international maritime standards.'
+        question: 'FAQ_Q4',
+        answer: 'FAQ_A4'
     },
     {
         id: 'default-5',
-        question: 'Do you provide 24/7 operational support?',
-        answer: 'Yes, we maintain round-the-clock operations with our dedicated support team available 24/7. Our operations center monitors all active vessels and can respond to emergencies or schedule changes at any time.'
+        question: 'FAQ_Q5',
+        answer: 'FAQ_A5'
     },
     {
         id: 'default-6',
-        question: 'What safety certifications do you hold?',
-        answer: 'Romeo Alpha holds ISM Code certification, ISO 9001:2015 for quality management, and complies with SOLAS, MARPOL, and ISPS Code requirements. Our crews are certified according to STCW standards and undergo regular safety training.'
+        question: 'FAQ_Q6',
+        answer: 'FAQ_A6'
     },
     {
         id: 'default-7',
-        question: 'How can I partner with Romeo Alpha?',
-        answer: 'We welcome partnerships with shipping companies, oil & gas operators, and maritime service providers. Contact our business development team through our Contact page to discuss collaboration opportunities and strategic alliances.'
+        question: 'FAQ_Q7',
+        answer: 'FAQ_A7'
     }
 ];
 

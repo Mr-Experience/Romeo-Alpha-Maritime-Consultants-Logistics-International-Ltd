@@ -9,8 +9,13 @@
     overflow-x: hidden;
     margin: 0;
     padding-top: 128px;
-    /* Fixed header offset */
+    z-index: 1;
+    /* Stay below header */
+    transition: padding-top 0.3s ease;
 }
+
+
+
 
 /* Careers Hero */
 .careers-hero {
@@ -18,13 +23,13 @@
     height: 400px;
     background-color: #6B82AC;
     position: relative;
+    z-index: 0;
+    /* explicitly put below the header */
     display: flex;
     justify-content: center;
     align-items: center;
     text-align: center;
-    /* Reuse maritime hero or specific one if needed, using generic maritime for now */
-    background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('images/hero-v3.jpg');
-    background-size: 107%;
+    /* Hero image removed as requested */
     background-position: center;
 }
 
@@ -180,6 +185,13 @@
 
 /* Responsive */
 @media (max-width: 1024px) {
+    .careers-hero {
+        width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        background-size: cover;
+    }
+
     .career-section {
         padding: 64px 24px;
         /* Reduced side padding on mobile/tablet */
@@ -214,6 +226,13 @@
 
 /* Mobile Spacing Optimization (< 515px) */
 @media (max-width: 515px) {
+    .careers-hero {
+        height: auto;
+        min-height: 350px;
+        padding: 64px 16px;
+        margin-top: 0;
+    }
+
     .careers-hero-title {
         font-size: 32px;
     }
@@ -223,11 +242,20 @@
     }
 
     .career-section {
-        padding: 48px 16px !important;
+        padding: 64px 16px !important;
+        position: relative;
+        z-index: 2;
     }
 
     .career-container {
-        gap: 24px !important;
+        gap: 40px !important;
+        margin-top: 0;
+    }
+
+    .career-col-image {
+        margin-top: 0 !important;
+        transform: none !important;
+        position: relative;
     }
 
     .main-heading {

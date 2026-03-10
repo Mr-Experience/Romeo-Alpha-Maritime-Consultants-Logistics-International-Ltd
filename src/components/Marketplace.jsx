@@ -106,18 +106,10 @@ const Marketplace = () => {
 
             {/* Simplified Service Highlight */}
             <div className="operations-container">
-                <div style={{
-                    padding: '24px 0',
-                    marginBottom: '40px',
-                    borderTop: '1px solid #eee',
-                    borderBottom: '1px solid #eee',
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center'
-                }}>
-                    <p style={{ color: '#001F3F', fontSize: '16px', fontWeight: '500', margin: 0 }}>
+                <div className="service-highlight-banner">
+                    <p className="service-highlight-text">
                         {t('Service Help Text')}
-                        <Link to="/contact" style={{ color: '#0056b3', marginLeft: '8px', fontWeight: '700', textDecoration: 'none' }}>{t('Reach out')}</Link>
+                        <Link to="/contact" className="service-highlight-link">{t('Reach out')}</Link>
                     </p>
                 </div>
             </div>

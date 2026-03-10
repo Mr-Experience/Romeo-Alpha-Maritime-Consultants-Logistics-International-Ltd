@@ -11,6 +11,7 @@
     margin: 0;
     padding-top: 128px;
     /* Offset for Fixed Headers */
+    transition: padding-top 0.3s ease;
 }
 
 /* About Hero Section */
@@ -141,15 +142,11 @@
     overflow: hidden;
 }
 
-.img-placeholder {
+.who-we-are-img {
     width: 100%;
     height: 100%;
-    background-color: #E5E7EB;
-    /* In a real scenario, use an img tag with object-fit: cover */
-    background-image: url('images/');
-    /* Reusing existing asset */
-    background-size: cover;
-    background-position: center;
+    object-fit: cover;
+    display: block;
 }
 
 /* Stats Section */
@@ -184,6 +181,15 @@
 
 /* Responsive adjustments */
 @media (max-width: 1024px) {
+    .about-hero {
+        width: 100% !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+        background-size: cover;
+    }
+
     .about-hero-title {
         font-size: 48px;
     }

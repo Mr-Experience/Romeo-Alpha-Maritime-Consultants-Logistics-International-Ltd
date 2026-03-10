@@ -8,6 +8,7 @@
     overflow-x: hidden;
     margin: 0;
     padding-top: 128px;
+    transition: padding-top 0.3s ease;
 }
 
 /* Hero Section */
@@ -340,15 +341,31 @@
 
     .contact-hero,
     .contact-content-section {
-        padding: 48px 16px !important;
+        padding: 48px 0 !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
+        overflow: hidden !important;
     }
 
     .contact-info-strip {
         gap: 16px !important;
+        padding: 0 16px !important;
+        box-sizing: border-box;
     }
 
     .contact-container {
+        padding: 0 !important;
+        margin: 0 !important;
         gap: 24px !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
+    }
+
+    .contact-form-container {
+        width: calc(100% - 32px) !important;
+        margin: 0 16px !important;
+        padding: 32px 20px !important;
+        box-sizing: border-box !important;
     }
 
     .form-group {
